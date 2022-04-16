@@ -29,7 +29,7 @@
 
 - (void)cm_audioUnitBackPCM:(NSData*)audioData{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.audioPlayer kl_playAudioWithData:(char*)[audioData bytes] andLength:audioData.length];
+        [self.audioPlayer cm_playAudioWithData:(char*)[audioData bytes] andLength:audioData.length];
     });
 }
 
@@ -48,7 +48,7 @@
     [self.audioSession cm_startAudioUnitRecorder];
 }
 - (IBAction)stopAction:(id)sender {
-    [self.audioPlayer kl_stop];
+    [self.audioPlayer cm_stop];
     [self.audioSession cm_stopAudioUnitRecorder];
 }
 - (IBAction)closeAction:(id)sender {

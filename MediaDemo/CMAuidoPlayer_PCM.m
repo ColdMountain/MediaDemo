@@ -121,7 +121,7 @@ OSStatus  CMAURenderCallback1(void *                      inRefCon,
         }
         if (ioData->mBuffers[0].mDataByteSize <= 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self  kl_stop];
+                [self cm_stop];
             });
         }
     }
@@ -131,19 +131,19 @@ OSStatus  CMAURenderCallback1(void *                      inRefCon,
 
 #pragma mark - 传入数据
 
-- (void)kl_playAudioWithData:(char*)pBuf andLength:(ssize_t)length{
+- (void)cm_playAudioWithData:(char*)pBuf andLength:(ssize_t)length{
     NSData *pcmData = [NSData dataWithBytes:pBuf length:length];
     [self.paketsArray addObject:pcmData];
-    [self kl_play];
+    [self cm_play];
 }
 
-- (void)kl_play{
+- (void)cm_play{
     OSStatus status = AudioOutputUnitStart(_outAudioUinit);
 //    NSLog(@"status = %d",(int)status);
     assert(status == noErr);
 }
 
-- (void)kl_stop{
+- (void)cm_stop{
     OSStatus status = AudioOutputUnitStop(_outAudioUinit);
     assert(status == noErr);
 }

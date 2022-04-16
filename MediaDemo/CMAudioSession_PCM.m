@@ -107,7 +107,7 @@
             break;
         }else if ([portDesc.portType isEqualToString:AVAudioSessionPortBuiltInSpeaker]){
             [audioSession overrideOutputAudioPort:audioSessionPortOverride error:nil];
-            NSLog(@"当前输出:%@==========%lu",portDesc.portType,(unsigned long)audioSessionPortOverride);
+            NSLog(@"当前输出:%@========== 设置输出:%lu",portDesc.portType,(unsigned long)audioSessionPortOverride);
             break;
         }
     }
