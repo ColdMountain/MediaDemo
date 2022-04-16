@@ -101,12 +101,13 @@
     AVAudioSessionRouteDescription *currentRoute = [[AVAudioSession sharedInstance] currentRoute];
     for (AVAudioSessionPortDescription *portDesc in [currentRoute outputs])
     {
-        NSLog(@"当前输出:%@==========%lu",portDesc.portType,(unsigned long)audioSessionPortOverride);
         if([portDesc.portType isEqualToString:AVAudioSessionPortBuiltInReceiver]){
             [audioSession overrideOutputAudioPort:audioSessionPortOverride error:nil];
+            NSLog(@"当前输出:%@========== 设置输出:%lu",portDesc.portType,(unsigned long)audioSessionPortOverride);
             break;
         }else if ([portDesc.portType isEqualToString:AVAudioSessionPortBuiltInSpeaker]){
             [audioSession overrideOutputAudioPort:audioSessionPortOverride error:nil];
+            NSLog(@"当前输出:%@==========%lu",portDesc.portType,(unsigned long)audioSessionPortOverride);
             break;
         }
     }
