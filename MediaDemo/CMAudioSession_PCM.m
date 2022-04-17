@@ -58,7 +58,6 @@
     self = [super init];
     if (self) {
         self.audioRate = audioRate;
-        self.nsLevel = 0;
         [self relocationAudio];
         [self initAudioComponent];
     }
@@ -137,8 +136,6 @@
     inputFormat.mFramesPerPacket  = 1;
     inputFormat.mChannelsPerFrame = 1;
     inputFormat.mBitsPerChannel   = 16;
-//    inputFormat.mBytesPerPacket = 2;
-//    inputFormat.mBytesPerFrame = 2;
     inputFormat.mBytesPerFrame    = (inputFormat.mBitsPerChannel / 8) * inputFormat.mChannelsPerFrame;
     inputFormat.mBytesPerPacket   = inputFormat.mBytesPerFrame;
     [self printAudioStreamBasicDescription:inputFormat];

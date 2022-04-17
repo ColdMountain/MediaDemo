@@ -34,6 +34,5 @@ typedef enum {
 
 @property (nonatomic, weak) id<CMAudioSessionPCMDelegate>delegate;
 @property (nonatomic, assign) CMAudioPCMSampleRate audioRate;
-@property (nonatomic, assign) NSInteger nsLevel;
 @end
 

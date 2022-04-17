@@ -23,8 +23,6 @@
     
     [self.button setTitle:@"听筒" forState:UIControlStateNormal];
     [self.button setTitle:@"扬声器" forState:UIControlStateSelected];
-    
-    self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_Defalut];
 }
 
 - (void)cm_audioUnitBackPCM:(NSData*)audioData{
@@ -43,7 +41,9 @@
 }
 
 - (IBAction)startAction:(id)sender {
-    self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_Defalut];
+    self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_44100Hz];
+    
+    self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_44100Hz];
     self.audioSession.delegate = self;
     [self.audioSession cm_startAudioUnitRecorder];
 }
@@ -52,8 +52,10 @@
     [self.audioSession cm_stopAudioUnitRecorder];
 }
 - (IBAction)closeAction:(id)sender {
+    [self.audioPlayer cm_close];
     [self.audioSession cm_closeAudioUnitRecorder];
     self.audioSession = nil;
+    self.audioPlayer = nil;
     self.button.selected = NO;
 }
 
