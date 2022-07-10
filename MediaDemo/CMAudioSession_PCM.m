@@ -78,9 +78,9 @@
                                         AVAudioSessionCategoryOptionDuckOthers
 //                                        AVAudioSessionCategoryOptionDefaultToSpeaker
                                   error:nil];
-    //设置I/O的buffer buffer越小延迟越低
-    NSTimeInterval bufferDyration = 0.01;
-    [audioSession setPreferredIOBufferDuration:bufferDyration error:&error];
+//    //设置I/O的buffer buffer越小延迟越低
+//    NSTimeInterval bufferDyration = 0.01;
+//    [audioSession setPreferredIOBufferDuration:bufferDyration error:&error];
 //    [audioSession setPreferredSampleRate:8000 error:&error]; 此代码会让 AirPods 在录制音频的时候 失真
     
     //set USB AUDIO device as high priority: iRig mic HD
@@ -216,7 +216,7 @@ static OSStatus RecordingCallback(void *inRefCon,
                                   session->buffList);
          NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
                                     length:session->buffList->mBuffers[0].mDataByteSize];
-//         NSLog(@"size = %d", session->buffList->mBuffers[0].mDataByteSize);
+         NSLog(@"size = %d", session->buffList->mBuffers[0].mDataByteSize);
          if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:)]) {
              char* speexByte = (char*)[pcmData bytes];
              

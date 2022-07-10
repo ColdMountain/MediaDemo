@@ -122,7 +122,7 @@ OSStatus  CMAURenderCallback(void *                      inRefCon,
                 ioData->mBuffers[0].mDataByteSize = (UInt32)packet.length;
                 ioData->mBuffers[0].mData = (char*)packet.bytes;
                 self->_readedPacketIndex++;
-                NSLog(@"当时数据个数:%ld=====渲染数据个数:%ld",self->_paketsArray.count, self->_readedPacketIndex);
+//                NSLog(@"当时数据个数:%ld=====渲染数据个数:%ld",self->_paketsArray.count, self->_readedPacketIndex);
 //                NSLog(@"out size: %u", (unsigned int)ioData->mBuffers[0].mDataByteSize);
 //                NSLog(@"out data: %s", ioData->mBuffers[0].mData);
             }
