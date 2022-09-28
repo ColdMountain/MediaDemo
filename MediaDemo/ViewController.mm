@@ -25,14 +25,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.fileManager = [NSFileManager defaultManager];
-    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [path objectAtIndex:0];
-    NSString *audio = [documentsDirectory stringByAppendingPathComponent:@"test_pcm.pcm"];
-    [self.fileManager removeItemAtPath:audio error:nil];
-    [self.fileManager createFileAtPath:audio contents:nil attributes:nil];
-    self.auidoHandle = [NSFileHandle fileHandleForWritingAtPath:audio];
-    
     [self.button setTitle:@"听筒" forState:UIControlStateNormal];
     [self.button setTitle:@"扬声器" forState:UIControlStateSelected];
 }
@@ -71,6 +63,24 @@
     self.audioSession = nil;
     self.audioPlayer = nil;
     self.button.selected = NO;
+}
+
+- (void)createPCMFile{
+    // /Applications/VLC.app/Contents/MacOS/VLC --demux=rawaud --rawaud-channels 1 --rawaud-samplerate 48000
+    self.fileManager = [NSFileManager defaultManager];
+    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [path objectAtIndex:0];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"]];
+    [formatter setDateFormat:@"yyyy-MM-dd HH-mm-ss"]; //每次启动后都保存一个新的日志文件中
+    NSString *dateStr = [formatter stringFromDate:[NSDate date]];
+    NSString *pcmPath = [NSString stringWithFormat:@"Auido_%@.pcm", dateStr];
+    
+//    [self.fileManager removeItemAtPath:[documentsDirectory stringByAppendingPathComponent:pcmPath] error: nil];
+    [self.fileManager createFileAtPath:[documentsDirectory stringByAppendingPathComponent:pcmPath] contents:nil attributes:nil];
+
+    self.auidoHandle = [NSFileHandle fileHandleForWritingAtPath:[documentsDirectory stringByAppendingPathComponent:pcmPath]];
 }
 
 

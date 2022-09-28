@@ -84,14 +84,36 @@
 //    [audioSession setPreferredSampleRate:8000 error:&error]; 此代码会让 AirPods 在录制音频的时候 失真
     
     //set USB AUDIO device as high priority: iRig mic HD
-    for (AVAudioSessionPortDescription *inputPort in [audioSession availableInputs])
-    {
-        if([inputPort.portType isEqualToString:AVAudioSessionPortUSBAudio])
+    int isSuccess = -1;
+    NSArray *inputs = audioSession.availableInputs;
+    
+    AVAudioSessionPortDescription *builtInputMic = nil;
+
+    for (AVAudioSessionPortDescription* port in inputs) {
+        NSLog(@"%@",port.portType);
+        if ([port.portType isEqualToString:AVAudioSessionPortBuiltInMic])
         {
-            [audioSession setPreferredInput:inputPort error:&error];
-            [audioSession setPreferredInputNumberOfChannels:1 error:&error];
+            builtInputMic = port;
             break;
         }
+    }
+    AVAudioSessionDataSourceDescription * frontDataSource = nil;
+    for (AVAudioSessionDataSourceDescription* source in builtInputMic.dataSources)
+    {
+        NSLog(@"%@",source.orientation);
+        NSLog(@"%@",source.supportedPolarPatterns);
+        if ([source.orientation isEqual:AVAudioSessionOrientationBottom]){
+            frontDataSource = source;
+            isSuccess = [frontDataSource setPreferredPolarPattern:AVAudioSessionPolarPatternSubcardioid error:nil];
+            NSLog(@"设置属性 %d",isSuccess);
+            break;
+        }
+    }
+
+    if (frontDataSource){
+        NSLog(@"Currently selected source is \"%@\" for port \"%@\"", builtInputMic.selectedDataSource.dataSourceName, builtInputMic.portName);
+        NSLog(@"Attempting to select source \"%@\" on port \"%@\"  \"%@\" \"%@\"", frontDataSource, builtInputMic.portName, frontDataSource.selectedPolarPattern, frontDataSource.preferredPolarPattern);
+        [builtInputMic setPreferredDataSource:frontDataSource error:nil];
     }
     success = [audioSession setActive:YES error:nil];
 }
@@ -216,7 +238,7 @@ static OSStatus RecordingCallback(void *inRefCon,
                                   session->buffList);
          NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
                                     length:session->buffList->mBuffers[0].mDataByteSize];
-         NSLog(@"size = %d", session->buffList->mBuffers[0].mDataByteSize);
+//         NSLog(@"size = %d", session->buffList->mBuffers[0].mDataByteSize);
          if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:)]) {
              char* speexByte = (char*)[pcmData bytes];
              
