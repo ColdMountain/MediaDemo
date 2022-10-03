@@ -456,9 +456,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4D49NLC4WA;
+				DEVELOPMENT_TEAM = W53E63XUBU;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MediaDemo/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "需要使用Mic";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -483,9 +484,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4D49NLC4WA;
+				DEVELOPMENT_TEAM = W53E63XUBU;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MediaDemo/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "需要使用Mic";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

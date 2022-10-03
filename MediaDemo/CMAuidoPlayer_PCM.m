@@ -43,10 +43,12 @@ static AudioStreamBasicDescription PCMStreamDescription(void*inData)
 - (instancetype)initWithAudioUnitPlayerSampleRate:(CMAudioPlayerSampleRate)sampleRate{
     if (self = [super init]) {
         self.audioRate = sampleRate;
-//        _renderBufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
-//        _renderBufferList->mBuffers[0].mNumberChannels = 1;
-//        _renderBufferList->mBuffers[0].mDataByteSize = 2048*2*10;
-//        _renderBufferList->mBuffers[0].mData = malloc(2048*2*10);
+#if 0
+        _renderBufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
+        _renderBufferList->mBuffers[0].mNumberChannels = 1;
+        _renderBufferList->mBuffers[0].mDataByteSize = 2048*2*10;
+        _renderBufferList->mBuffers[0].mData = malloc(2048*2*10);
+#endif
         _readedPacketIndex = 0;
         _paketsArray = [NSMutableArray arrayWithCapacity:0];
         [self setupOutAudioUnit];
@@ -104,11 +106,11 @@ static AudioStreamBasicDescription PCMStreamDescription(void*inData)
 }
 
 OSStatus  CMAURenderCallback(void *                      inRefCon,
-                              AudioUnitRenderActionFlags* ioActionFlags,
-                              const AudioTimeStamp*       inTimeStamp,
-                              UInt32                      inBusNumber,
-                              UInt32                      inNumberFrames,
-                              AudioBufferList*            __nullable ioData){
+                             AudioUnitRenderActionFlags* ioActionFlags,
+                             const AudioTimeStamp*       inTimeStamp,
+                             UInt32                      inBusNumber,
+                             UInt32                      inNumberFrames,
+                             AudioBufferList*            __nullable ioData){
     CMAuidoPlayer_PCM * self = (__bridge CMAuidoPlayer_PCM *)(inRefCon);
     
 #if 0

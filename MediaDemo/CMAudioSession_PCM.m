@@ -71,29 +71,61 @@
     //设置成语音视频模式
     audioSession = [AVAudioSession sharedInstance];
     
+//    success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
+//                            withOptions:AVAudioSessionCategoryOptionAllowBluetooth|
+//                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
+//                                        AVAudioSessionCategoryOptionMixWithOthers|
+//                                        AVAudioSessionCategoryOptionDuckOthers
+//                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
+//                                  error:nil];
+    
     success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
-                            withOptions:AVAudioSessionCategoryOptionAllowBluetooth|
-                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
-                                        AVAudioSessionCategoryOptionMixWithOthers|
+                                   mode:AVAudioSessionModeVideoChat
+                                options:
+                                        AVAudioSessionCategoryOptionAllowBluetooth|
+//                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
                                         AVAudioSessionCategoryOptionDuckOthers
-//                                        AVAudioSessionCategoryOptionDefaultToSpeaker
+//                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
                                   error:nil];
+    success = [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
+    success = [audioSession setActive:YES error:nil];
+    
 //    //设置I/O的buffer buffer越小延迟越低
 //    NSTimeInterval bufferDyration = 0.01;
 //    [audioSession setPreferredIOBufferDuration:bufferDyration error:&error];
 //    [audioSession setPreferredSampleRate:8000 error:&error]; 此代码会让 AirPods 在录制音频的时候 失真
     
-    //set USB AUDIO device as high priority: iRig mic HD
-    for (AVAudioSessionPortDescription *inputPort in [audioSession availableInputs])
-    {
-        if([inputPort.portType isEqualToString:AVAudioSessionPortUSBAudio])
+    int isSuccess = -1;
+    NSArray *inputs = audioSession.availableInputs;
+
+    AVAudioSessionPortDescription *builtInputMic = nil;
+
+    for (AVAudioSessionPortDescription* port in inputs) {
+        NSLog(@"%@",port.portType);
+        if ([port.portType isEqualToString:AVAudioSessionPortBuiltInMic])
         {
-            [audioSession setPreferredInput:inputPort error:&error];
-            [audioSession setPreferredInputNumberOfChannels:1 error:&error];
+            builtInputMic = port;
             break;
         }
     }
-    success = [audioSession setActive:YES error:nil];
+    AVAudioSessionDataSourceDescription * frontDataSource = nil;
+    for (AVAudioSessionDataSourceDescription* source in builtInputMic.dataSources)
+    {
+        NSLog(@"%@",source.orientation);
+        NSLog(@"%@",source.supportedPolarPatterns);
+        if ([source.orientation isEqual:AVAudioSessionOrientationBack]){
+            frontDataSource = source;
+            isSuccess = [frontDataSource setPreferredPolarPattern:AVAudioSessionPolarPatternCardioid error:nil];
+            NSLog(@"设置属性 %d",isSuccess);
+            break;
+        }
+    }
+
+    if (frontDataSource){
+        NSLog(@"Currently selected source is \"%@\" for port \"%@\"", builtInputMic.selectedDataSource.dataSourceName, builtInputMic.portName);
+        NSLog(@"Attempting to select source \"%@\" on port \"%@\"  \"%@\" \"%@\"", frontDataSource, builtInputMic.portName, frontDataSource.selectedPolarPattern, frontDataSource.preferredPolarPattern);
+        [builtInputMic setPreferredDataSource:frontDataSource error:nil];
+    }
 }
 
 - (void)setOutputAudioPort:(AVAudioSessionPortOverride)audioSessionPortOverride{
@@ -102,14 +134,28 @@
     {
         if([portDesc.portType isEqualToString:AVAudioSessionPortBuiltInReceiver]){
             [audioSession overrideOutputAudioPort:audioSessionPortOverride error:nil];
-            NSLog(@"当前输出:%@========== 设置输出:%lu",portDesc.portType,(unsigned long)audioSessionPortOverride);
+            NSLog(@"当前输出:%@========== 设置输出:%lu",portDesc.portName,(unsigned long)audioSessionPortOverride);
             break;
         }else if ([portDesc.portType isEqualToString:AVAudioSessionPortBuiltInSpeaker]){
             [audioSession overrideOutputAudioPort:audioSessionPortOverride error:nil];
-            NSLog(@"当前输出:%@========== 设置输出:%lu",portDesc.portType,(unsigned long)audioSessionPortOverride);
+            NSLog(@"当前输出:%@========== 设置输出:%lu",portDesc.portName,(unsigned long)audioSessionPortOverride);
             break;
         }
     }
+    
+//    AVAudioSessionPortDescription *builtInputMic = nil;
+//
+//    for (AVAudioSessionPortDescription *portDesc in [currentRoute outputs])
+//    {
+//        if([portDesc.portType isEqualToString:AVAudioSessionPortBuiltInReceiver]){
+//
+//            builtInputMic = portDesc;
+//            break;
+//        }else if ([portDesc.portType isEqualToString:AVAudioSessionPortBuiltInSpeaker]){
+//            builtInputMic = portDesc;
+//            break;
+//        }
+//    }
 }
 
 - (void)initAudioComponent{
@@ -140,11 +186,11 @@
     inputFormat.mBytesPerPacket   = inputFormat.mBytesPerFrame;
     [self printAudioStreamBasicDescription:inputFormat];
     status = AudioUnitSetProperty(audioUnit,
-                         kAudioUnitProperty_StreamFormat,
-                         kAudioUnitScope_Output,
-                         INPUT_BUS,
-                         &inputFormat,
-                         sizeof(inputFormat));
+                                  kAudioUnitProperty_StreamFormat,
+                                  kAudioUnitScope_Output,
+                                  INPUT_BUS,
+                                  &inputFormat,
+                                  sizeof(inputFormat));
     if (status != noErr) {
         NSLog(@"2、AudioUnitGetProperty error, ret: %d", (int)status);
     }
@@ -165,27 +211,39 @@
     
     UInt32 flag = 1;
     status = AudioUnitSetProperty(audioUnit,
-                         kAudioOutputUnitProperty_EnableIO,
-                         kAudioUnitScope_Input,
-                         INPUT_BUS,
-                         &flag,
-                         sizeof(flag));
+                                  kAudioOutputUnitProperty_EnableIO,
+                                  kAudioUnitScope_Input,
+                                  INPUT_BUS,
+                                  &flag,
+                                  sizeof(flag));
     if (status != noErr) {
         NSLog(@"4、AudioUnitGetProperty error, ret: %d", (int)status);
     }
+    
+//    UInt32 echoCancellation = 0;
+//    UInt32 size = sizeof(echoCancellation);
+//    status = AudioUnitGetProperty(audioUnit,
+//                                  kAUVoiceIOProperty_BypassVoiceProcessing,
+//                                  kAudioUnitScope_Global,
+//                                  INPUT_BUS,
+//                                  &echoCancellation,
+//                                  &size);
+//    if (status != noErr) {
+//        NSLog(@"5、AudioUnitGetProperty error, ret: %d", (int)status);
+//    }
     
     // 设置数据采集回调函数
     AURenderCallbackStruct recordCallback;
     recordCallback.inputProc = RecordingCallback;
     recordCallback.inputProcRefCon = (__bridge void *)self;
     status = AudioUnitSetProperty(audioUnit,
-                         kAudioOutputUnitProperty_SetInputCallback,
-                         kAudioUnitScope_Global,
-                         INPUT_BUS,
-                         &recordCallback,
-                         sizeof(recordCallback));
+                                  kAudioOutputUnitProperty_SetInputCallback,
+                                  kAudioUnitScope_Global,
+                                  INPUT_BUS,
+                                  &recordCallback,
+                                  sizeof(recordCallback));
     if (status != noErr) {
-        NSLog(@"5、AudioUnitGetProperty error, ret: %d", (int)status);
+        NSLog(@"6、AudioUnitGetProperty error, ret: %d", (int)status);
     }
     
     OSStatus result = AudioUnitInitialize(audioUnit);
@@ -216,7 +274,7 @@ static OSStatus RecordingCallback(void *inRefCon,
                                   session->buffList);
          NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
                                     length:session->buffList->mBuffers[0].mDataByteSize];
-         NSLog(@"size = %d", session->buffList->mBuffers[0].mDataByteSize);
+//         NSLog(@"size = %d", session->buffList->mBuffers[0].mDataByteSize);
          if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:)]) {
              char* speexByte = (char*)[pcmData bytes];
              
