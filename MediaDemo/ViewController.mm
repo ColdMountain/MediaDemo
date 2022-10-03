@@ -38,10 +38,11 @@
 }
 
 - (void)cm_audioUnitBackPCM:(NSData*)audioData{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.auidoHandle writeData:audioData];
-        [self.audioPlayer cm_playAudioWithData:(char*)[audioData bytes] andLength:audioData.length];
-    });
+    [self.auidoHandle writeData:audioData];
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [self.auidoHandle writeData:audioData];
+//        [self.audioPlayer cm_playAudioWithData:(char*)[audioData bytes] andLength:audioData.length];
+//    });
 }
 
 - (IBAction)receiverAndSpeaker:(UIButton*)sender {
