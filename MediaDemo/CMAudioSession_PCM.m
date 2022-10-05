@@ -83,17 +83,18 @@
                                    mode:AVAudioSessionModeVideoChat
                                 options:
                                         AVAudioSessionCategoryOptionAllowBluetooth|
-//                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
+                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
                                         AVAudioSessionCategoryOptionDuckOthers
-//                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
+                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
                                   error:nil];
-    success = [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
+    //需要加入设置采样率 声道数 每采样一次的时间
+    [audioSession setPreferredSampleRate:8000 error:&error];
+    [audioSession setPreferredInputNumberOfChannels:1 error:&error];
+    [audioSession setPreferredIOBufferDuration:0.125 error:&error];
+    
+//    success = [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
     success = [audioSession setActive:YES error:nil];
     
-//    //设置I/O的buffer buffer越小延迟越低
-//    NSTimeInterval bufferDyration = 0.01;
-//    [audioSession setPreferredIOBufferDuration:bufferDyration error:&error];
-//    [audioSession setPreferredSampleRate:8000 error:&error]; 此代码会让 AirPods 在录制音频的时候 失真
     
     int isSuccess = -1;
     NSArray *inputs = audioSession.availableInputs;
@@ -113,7 +114,7 @@
     {
         NSLog(@"%@",source.orientation);
         NSLog(@"%@",source.supportedPolarPatterns);
-        if ([source.orientation isEqual:AVAudioSessionOrientationBack]){
+        if ([source.orientation isEqual:AVAudioSessionOrientationBottom]){
             frontDataSource = source;
             isSuccess = [frontDataSource setPreferredPolarPattern:AVAudioSessionPolarPatternCardioid error:nil];
             NSLog(@"设置属性 %d",isSuccess);
@@ -163,7 +164,7 @@
     AudioComponentDescription desc;
     desc.componentType         = kAudioUnitType_Output;
     desc.componentSubType      = kAudioUnitSubType_VoiceProcessingIO;
-    //kAudioUnitSubType_VoiceProcessingIO, kAudioUnitSubType_RemoteIO
+//    kAudioUnitSubType_VoiceProcessingIO, kAudioUnitSubType_RemoteIO
     desc.componentManufacturer = kAudioUnitManufacturer_Apple;
     desc.componentFlags        = 0;
     desc.componentFlagsMask    = 0;
@@ -220,17 +221,17 @@
         NSLog(@"4、AudioUnitGetProperty error, ret: %d", (int)status);
     }
     
-//    UInt32 echoCancellation = 0;
-//    UInt32 size = sizeof(echoCancellation);
-//    status = AudioUnitGetProperty(audioUnit,
-//                                  kAUVoiceIOProperty_BypassVoiceProcessing,
-//                                  kAudioUnitScope_Global,
-//                                  INPUT_BUS,
-//                                  &echoCancellation,
-//                                  &size);
-//    if (status != noErr) {
-//        NSLog(@"5、AudioUnitGetProperty error, ret: %d", (int)status);
-//    }
+    UInt32 echoCancellation = 1;
+    UInt32 size = sizeof(echoCancellation);
+    status = AudioUnitGetProperty(audioUnit,
+                                  kAUVoiceIOProperty_BypassVoiceProcessing,
+                                  kAudioUnitScope_Global,
+                                  INPUT_BUS,
+                                  &echoCancellation,
+                                  &size);
+    if (status != noErr) {
+        NSLog(@"5、AudioUnitGetProperty error, ret: %d", (int)status);
+    }
     
     // 设置数据采集回调函数
     AURenderCallbackStruct recordCallback;
