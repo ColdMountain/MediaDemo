@@ -95,7 +95,7 @@
 //    success = [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
     success = [audioSession setActive:YES error:nil];
     
-    
+#if 0
     int isSuccess = -1;
     NSArray *inputs = audioSession.availableInputs;
 
@@ -127,6 +127,8 @@
         NSLog(@"Attempting to select source \"%@\" on port \"%@\"  \"%@\" \"%@\"", frontDataSource, builtInputMic.portName, frontDataSource.selectedPolarPattern, frontDataSource.preferredPolarPattern);
         [builtInputMic setPreferredDataSource:frontDataSource error:nil];
     }
+#endif
+    
 }
 
 - (void)setOutputAudioPort:(AVAudioSessionPortOverride)audioSessionPortOverride{
@@ -198,7 +200,7 @@
     
     AudioStreamBasicDescription outputFormat = inputFormat;
      outputFormat.mChannelsPerFrame = 1;
-     
+
     status = AudioUnitSetProperty(audioUnit,
                                   kAudioOutputUnitProperty_EnableIO,
                                   kAudioUnitScope_Output,
@@ -221,17 +223,31 @@
         NSLog(@"4、AudioUnitGetProperty error, ret: %d", (int)status);
     }
     
-    UInt32 echoCancellation = 1;
+    //回音消除参数 依赖 kAudioUnitSubType_VoiceProcessingIO
+    UInt32 echoCancellation;
     UInt32 size = sizeof(echoCancellation);
-    status = AudioUnitGetProperty(audioUnit,
+    status = AudioUnitSetProperty(audioUnit,
                                   kAUVoiceIOProperty_BypassVoiceProcessing,
                                   kAudioUnitScope_Global,
                                   INPUT_BUS,
                                   &echoCancellation,
-                                  &size);
+                                  size);
     if (status != noErr) {
-        NSLog(@"5、AudioUnitGetProperty error, ret: %d", (int)status);
+        NSLog(@"5、AudioUnitSetProperty kAUVoiceIOProperty_BypassVoiceProcessing failed : %d", (int)status);
     }
+    
+    //AGC 增益 依赖 kAudioUnitSubType_VoiceProcessingIO
+//    UInt32 enable_agc = 1;
+//    status = AudioUnitSetProperty(audioUnit,
+//                                  kAUVoiceIOProperty_VoiceProcessingEnableAGC,
+//                                  kAudioUnitScope_Global,
+//                                  INPUT_BUS,
+//                                  &enable_agc,
+//                                  sizeof(enable_agc));
+//    if (status != noErr) {
+//        NSLog(@"Failed to enable the built-in AGC. " "Error=%d", (int)status);
+//    }
+    
     
     // 设置数据采集回调函数
     AURenderCallbackStruct recordCallback;
