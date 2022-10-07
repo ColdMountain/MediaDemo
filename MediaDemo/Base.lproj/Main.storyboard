@@ -61,10 +61,25 @@
                                     <action selector="receiverAndSpeaker:" destination="BYZ-38-t0r" eventType="touchUpInside" id="yX8-vD-lWD"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fML-Jp-xV8">
+                                <rect key="frame" x="167" y="141" width="80" height="38"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="zhn-HN-Jph"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="PingFangSC-Medium" family="PingFang SC" pointSize="18"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="回音消除">
+                                    <color key="titleColor" systemColor="systemPurpleColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="echoAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="p0m-2Z-AV5"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="9W6-Cg-QFg" firstAttribute="top" secondItem="fML-Jp-xV8" secondAttribute="bottom" constant="50" id="2ys-uH-J1l"/>
                             <constraint firstItem="9W6-Cg-QFg" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="5Bl-b0-xgk"/>
                             <constraint firstItem="cck-gd-sfb" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="9UV-nZ-DAg"/>
                             <constraint firstItem="fGt-c5-Z8b" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="100" id="F4j-oE-CKB"/>
@@ -73,15 +88,17 @@
                             <constraint firstItem="9W6-Cg-QFg" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-200" id="NDC-HR-mJ9"/>
                             <constraint firstItem="e6F-BM-SBX" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="ddl-Bj-bgT"/>
                             <constraint firstItem="fGt-c5-Z8b" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="gts-sb-101"/>
+                            <constraint firstItem="fML-Jp-xV8" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="mcL-pB-AX2"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="button" destination="fGt-c5-Z8b" id="JhT-dk-1Wy"/>
+                        <outlet property="echoButton" destination="fML-Jp-xV8" id="BSs-ty-LDJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-139" y="51"/>
+            <point key="canvasLocation" x="-587" y="23"/>
         </scene>
     </scenes>
     <resources>
@@ -93,6 +110,9 @@
         </systemColor>
         <systemColor name="systemIndigoColor">
             <color red="0.34509803921568627" green="0.33725490196078434" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemPurpleColor">
+            <color red="0.68627450980392157" green="0.32156862745098042" blue="0.87058823529411766" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemYellowColor">
             <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

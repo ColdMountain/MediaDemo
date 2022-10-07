@@ -71,29 +71,29 @@
     //设置成语音视频模式
     audioSession = [AVAudioSession sharedInstance];
     
+    success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
+                            withOptions:AVAudioSessionCategoryOptionAllowBluetooth|
+                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
+                                        AVAudioSessionCategoryOptionMixWithOthers|
+                                        AVAudioSessionCategoryOptionDuckOthers
+//                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
+                                  error:nil];
+    
 //    success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
-//                            withOptions:AVAudioSessionCategoryOptionAllowBluetooth|
+//                                   mode:AVAudioSessionModeVideoChat
+//                                options:
+//                                        AVAudioSessionCategoryOptionAllowBluetooth|
 //                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
-//                                        AVAudioSessionCategoryOptionMixWithOthers|
 //                                        AVAudioSessionCategoryOptionDuckOthers
 //                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
 //                                  error:nil];
-    
-    success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
-                                   mode:AVAudioSessionModeVideoChat
-                                options:
-                                        AVAudioSessionCategoryOptionAllowBluetooth|
-                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
-                                        AVAudioSessionCategoryOptionDuckOthers
-                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
-                                  error:nil];
     //需要加入设置采样率 声道数 每采样一次的时间
-    [audioSession setPreferredSampleRate:8000 error:&error];
-    [audioSession setPreferredInputNumberOfChannels:1 error:&error];
-    [audioSession setPreferredIOBufferDuration:0.125 error:&error];
+//    [audioSession setPreferredSampleRate:8000 error:&error];
+//    [audioSession setPreferredInputNumberOfChannels:1 error:&error];
+//    [audioSession setPreferredIOBufferDuration:0.125 error:&error];
     
 //    success = [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
-    success = [audioSession setActive:YES error:nil];
+    success = [audioSession setActive:YES error:&error];
     
 #if 0
     int isSuccess = -1;
@@ -128,7 +128,6 @@
         [builtInputMic setPreferredDataSource:frontDataSource error:nil];
     }
 #endif
-    
 }
 
 - (void)setOutputAudioPort:(AVAudioSessionPortOverride)audioSessionPortOverride{
@@ -145,20 +144,6 @@
             break;
         }
     }
-    
-//    AVAudioSessionPortDescription *builtInputMic = nil;
-//
-//    for (AVAudioSessionPortDescription *portDesc in [currentRoute outputs])
-//    {
-//        if([portDesc.portType isEqualToString:AVAudioSessionPortBuiltInReceiver]){
-//
-//            builtInputMic = portDesc;
-//            break;
-//        }else if ([portDesc.portType isEqualToString:AVAudioSessionPortBuiltInSpeaker]){
-//            builtInputMic = portDesc;
-//            break;
-//        }
-//    }
 }
 
 - (void)initAudioComponent{
@@ -224,17 +209,17 @@
     }
     
     //回音消除参数 依赖 kAudioUnitSubType_VoiceProcessingIO
-    UInt32 echoCancellation;
-    UInt32 size = sizeof(echoCancellation);
-    status = AudioUnitSetProperty(audioUnit,
-                                  kAUVoiceIOProperty_BypassVoiceProcessing,
-                                  kAudioUnitScope_Global,
-                                  INPUT_BUS,
-                                  &echoCancellation,
-                                  size);
-    if (status != noErr) {
-        NSLog(@"5、AudioUnitSetProperty kAUVoiceIOProperty_BypassVoiceProcessing failed : %d", (int)status);
-    }
+//    UInt32 echoCancellation;
+//    UInt32 size = sizeof(echoCancellation);
+//    status = AudioUnitSetProperty(audioUnit,
+//                                  kAUVoiceIOProperty_BypassVoiceProcessing,
+//                                  kAudioUnitScope_Global,
+//                                  INPUT_BUS,
+//                                  &echoCancellation,
+//                                  size);
+//    if (status != noErr) {
+//        NSLog(@"5、AudioUnitSetProperty kAUVoiceIOProperty_BypassVoiceProcessing failed : %d", (int)status);
+//    }
     
     //AGC 增益 依赖 kAudioUnitSubType_VoiceProcessingIO
 //    UInt32 enable_agc = 1;
@@ -314,6 +299,36 @@ static OSStatus RecordingCallback(void *inRefCon,
      }
     return noErr;
 }
+
+//回音消除
+- (void)cm_startEchoAudio:(int)echoStatus{
+    OSStatus status;
+    UInt32 echoCancellation;
+    UInt32 size = sizeof(echoCancellation);
+    status = AudioUnitGetProperty(audioUnit,
+                                  kAUVoiceIOProperty_BypassVoiceProcessing,
+                                  kAudioUnitScope_Global,
+                                  OUTPUT_BUS,
+                                  &echoCancellation,
+                                  &size);
+    if (status != noErr){
+        NSLog(@"kAUVoiceIOProperty_BypassVoiceProcessing failed %d", (int)status);
+    }
+    
+    if (echoStatus == echoCancellation){
+        return;
+    }
+    status = AudioUnitSetProperty(audioUnit,
+                                  kAUVoiceIOProperty_BypassVoiceProcessing,
+                                  kAudioUnitScope_Global,
+                                  OUTPUT_BUS,
+                                  &echoStatus,
+                                  sizeof(echoStatus));
+    if (status != noErr){
+        NSLog(@"kAUVoiceIOProperty_BypassVoiceProcessing failed %d", (int)status);
+    }
+}
+
 
 //开启AudioUnit
 - (void)cm_startAudioUnitRecorder {

@@ -14,6 +14,7 @@
 @property (nonatomic, strong) CMAuidoPlayer_PCM *audioPlayer;
 @property (nonatomic, strong) CMAudioSession_PCM*audioSession;
 @property (weak, nonatomic) IBOutlet UIButton *button;
+@property (weak, nonatomic) IBOutlet UIButton *echoButton;
 
 @property (nonatomic, strong) NSFileManager *fileManager;
 @property (nonatomic, strong) NSFileHandle  *auidoHandle;
@@ -28,6 +29,9 @@
     [self createPCMFile];
     [self.button setTitle:@"听筒" forState:UIControlStateNormal];
     [self.button setTitle:@"扬声器" forState:UIControlStateSelected];
+    
+    self.echoButton.selected = YES;
+    [self.echoButton setBackgroundColor:[UIColor redColor]];
 }
 
 - (void)cm_audioUnitBackPCM:(NSData*)audioData{
@@ -37,13 +41,23 @@
         [self.audioPlayer cm_playAudioWithData:(char*)[audioData bytes] andLength:audioData.length];
     });
 }
+- (IBAction)echoAction:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    if (sender.selected) {
+        [self.audioSession cm_startEchoAudio:0];
+        [self.echoButton setBackgroundColor:[UIColor redColor]];
+    }else {
+        [self.audioSession cm_startEchoAudio:1];
+        [self.echoButton setBackgroundColor:[UIColor clearColor]];
+    }
+}
 
 - (IBAction)receiverAndSpeaker:(UIButton*)sender {
     sender.selected = !sender.selected;
     if (sender.selected) {
-        [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
-    }else {
         [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideNone];
+    }else {
+        [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
     }
 }
 
@@ -53,6 +67,7 @@
     self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_Defalut];
     self.audioSession.delegate = self;
     [self.audioSession cm_startAudioUnitRecorder];
+    [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
 }
 - (IBAction)stopAction:(id)sender {
     [self.audioPlayer cm_stop];

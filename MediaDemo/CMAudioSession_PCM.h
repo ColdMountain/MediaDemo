@@ -28,9 +28,11 @@ typedef enum {
 @interface CMAudioSession_PCM : NSObject
 - (instancetype)initAudioUnitWithSampleRate:(CMAudioPCMSampleRate)audioRate;
 - (void)setOutputAudioPort:(AVAudioSessionPortOverride)audioSessionPortOverride;
+- (void)cm_startEchoAudio:(int)echoStatus;
 - (void)cm_startAudioUnitRecorder;
 - (void)cm_stopAudioUnitRecorder;
 - (void)cm_closeAudioUnitRecorder;
+
 
 @property (nonatomic, weak) id<CMAudioSessionPCMDelegate>delegate;
 @property (nonatomic, assign) CMAudioPCMSampleRate audioRate;
