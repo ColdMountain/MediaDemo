@@ -222,16 +222,16 @@
 //    }
     
     //AGC 增益 依赖 kAudioUnitSubType_VoiceProcessingIO
-//    UInt32 enable_agc = 1;
-//    status = AudioUnitSetProperty(audioUnit,
-//                                  kAUVoiceIOProperty_VoiceProcessingEnableAGC,
-//                                  kAudioUnitScope_Global,
-//                                  INPUT_BUS,
-//                                  &enable_agc,
-//                                  sizeof(enable_agc));
-//    if (status != noErr) {
-//        NSLog(@"Failed to enable the built-in AGC. " "Error=%d", (int)status);
-//    }
+    UInt32 enable_agc = 1;
+    status = AudioUnitSetProperty(audioUnit,
+                                  kAUVoiceIOProperty_VoiceProcessingEnableAGC,
+                                  kAudioUnitScope_Global,
+                                  INPUT_BUS,
+                                  &enable_agc,
+                                  sizeof(enable_agc));
+    if (status != noErr) {
+        NSLog(@"Failed to enable the built-in AGC. " "Error=%d", (int)status);
+    }
     
     
     // 设置数据采集回调函数
