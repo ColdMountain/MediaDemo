@@ -21,37 +21,6 @@
 }
 @end
 
-//int nsProcess(int16_t *buffer, uint32_t sampleRate ,int samplesCount, int level)
-//{
-//    if (buffer == 0) return -1;
-//    if (samplesCount == 0) return -1;
-//    size_t samples = MIN(160, sampleRate / 100);
-//    if (samples == 0) return -1;
-//    uint32_t num_bands = 1;
-//    int16_t *input = buffer;
-//    size_t nTotal = (samplesCount / samples);
-//    NsHandle *nsHandle = WebRtcNs_Create();
-//    int status = WebRtcNs_Init(nsHandle, sampleRate);
-//    if (status != 0) {
-//        printf("WebRtcNs_Init fail\n");
-//        return -1;
-//    }
-//    status = WebRtcNs_set_policy(nsHandle, level);
-//    if (status != 0) {
-//        printf("WebRtcNs_set_policy fail\n");
-//        return -1;
-//    }
-//    for (int i = 0; i < nTotal; i++) {
-//        int16_t *nsIn[1] = {input};   //ns input[band][data]
-//        int16_t *nsOut[1] = {input};  //ns output[band][data]
-//        WebRtcNs_Analyze(nsHandle, nsIn[0]);
-//        WebRtcNs_Process(nsHandle, (const int16_t *const *) nsIn, num_bands, nsOut);
-//        input += samples;
-//    }
-//    WebRtcNs_Free(nsHandle);
-//
-//    return 1;
-//}
 
 @implementation CMAudioSession_PCM
 - (instancetype)initAudioUnitWithSampleRate:(CMAudioPCMSampleRate)audioRate{
@@ -173,6 +142,8 @@
     inputFormat.mBytesPerFrame    = (inputFormat.mBitsPerChannel / 8) * inputFormat.mChannelsPerFrame;
     inputFormat.mBytesPerPacket   = inputFormat.mBytesPerFrame;
     [self printAudioStreamBasicDescription:inputFormat];
+    
+    //录音输入
     status = AudioUnitSetProperty(audioUnit,
                                   kAudioUnitProperty_StreamFormat,
                                   kAudioUnitScope_Output,
@@ -182,22 +153,31 @@
     if (status != noErr) {
         NSLog(@"2、AudioUnitGetProperty error, ret: %d", (int)status);
     }
+    //播放输出
+    status = AudioUnitSetProperty(audioUnit,
+                                  kAudioUnitProperty_StreamFormat,
+                                  kAudioUnitScope_Input,
+                                  OUTPUT_BUS,
+                                  &inputFormat,
+                                  sizeof(inputFormat));
+    if (status != noErr) {
+        NSLog(@"3、AudioUnitGetProperty error, ret: %d", (int)status);
+    }
     
     AudioStreamBasicDescription outputFormat = inputFormat;
-     outputFormat.mChannelsPerFrame = 1;
-
+    
+    UInt32 flag = 1;
     status = AudioUnitSetProperty(audioUnit,
                                   kAudioOutputUnitProperty_EnableIO,
                                   kAudioUnitScope_Output,
                                   OUTPUT_BUS,
-                                  &outputFormat,
-                                  sizeof(outputFormat));
+                                  &flag,
+                                  sizeof(flag));
 
      if (status != noErr) {
-         NSLog(@"3、AudioUnitGetProperty error, ret: %d", (int)status);
+         NSLog(@"4、AudioUnitGetProperty error, ret: %d", (int)status);
      }
     
-    UInt32 flag = 1;
     status = AudioUnitSetProperty(audioUnit,
                                   kAudioOutputUnitProperty_EnableIO,
                                   kAudioUnitScope_Input,
@@ -205,22 +185,9 @@
                                   &flag,
                                   sizeof(flag));
     if (status != noErr) {
-        NSLog(@"4、AudioUnitGetProperty error, ret: %d", (int)status);
+        NSLog(@"5、AudioUnitGetProperty error, ret: %d", (int)status);
     }
-    
-    //回音消除参数 依赖 kAudioUnitSubType_VoiceProcessingIO
-//    UInt32 echoCancellation;
-//    UInt32 size = sizeof(echoCancellation);
-//    status = AudioUnitSetProperty(audioUnit,
-//                                  kAUVoiceIOProperty_BypassVoiceProcessing,
-//                                  kAudioUnitScope_Global,
-//                                  INPUT_BUS,
-//                                  &echoCancellation,
-//                                  size);
-//    if (status != noErr) {
-//        NSLog(@"5、AudioUnitSetProperty kAUVoiceIOProperty_BypassVoiceProcessing failed : %d", (int)status);
-//    }
-    
+        
     //AGC 增益 依赖 kAudioUnitSubType_VoiceProcessingIO
     UInt32 enable_agc = 1;
     status = AudioUnitSetProperty(audioUnit,
@@ -234,13 +201,13 @@
     }
     
     
-    // 设置数据采集回调函数
+    //设置数据采集回调函数
     AURenderCallbackStruct recordCallback;
     recordCallback.inputProc = RecordingCallback;
     recordCallback.inputProcRefCon = (__bridge void *)self;
     status = AudioUnitSetProperty(audioUnit,
                                   kAudioOutputUnitProperty_SetInputCallback,
-                                  kAudioUnitScope_Global,
+                                  kAudioUnitScope_Output,
                                   INPUT_BUS,
                                   &recordCallback,
                                   sizeof(recordCallback));
@@ -248,10 +215,26 @@
         NSLog(@"6、AudioUnitGetProperty error, ret: %d", (int)status);
     }
     
+    //设置数据播放回调
+    AURenderCallbackStruct callBackStruct;
+    callBackStruct.inputProc       = CMRenderCallback;
+    callBackStruct.inputProcRefCon = (__bridge void * _Nullable)(self);
+    status = AudioUnitSetProperty(audioUnit,
+                                  kAudioUnitProperty_SetRenderCallback,
+                                  kAudioUnitScope_Input,
+                                  OUTPUT_BUS,
+                                  &callBackStruct,
+                                  sizeof(callBackStruct));
+    
+    if (status != noErr) {
+        NSLog(@"7、AudioUnitGetProperty error, ret: %d", (int)status);
+    }
+    
     OSStatus result = AudioUnitInitialize(audioUnit);
     NSLog(@"result %d", (int)result);
 }
 
+#pragma mark - 采集音频回调
 
 static OSStatus RecordingCallback(void *inRefCon,
                                   AudioUnitRenderActionFlags *ioActionFlags,
@@ -279,24 +262,28 @@ static OSStatus RecordingCallback(void *inRefCon,
 //         NSLog(@"size = %d", session->buffList->mBuffers[0].mDataByteSize);
          if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:)]) {
              char* speexByte = (char*)[pcmData bytes];
-             
-             //添加webRTC降噪
-             /* 音频数据 音频采样率
-              * 位深 降噪等级0~3
-              */
-//             int success =  nsProcess(speexByte,
-//                                      session.audioRate,
-//                                      16,
-//                                      (int)session.nsLevel);
-//             if (success==0) {
-//                 NSLog(@"降噪失败 error:%d",success);
-//             }
              NSData *data = [NSData dataWithBytes:speexByte length:pcmData.length];
              [session.delegate cm_audioUnitBackPCM:data];
          }
      } else {
          NSLog(@"inNumberFrames is %u", (unsigned int)inNumberFrames);
      }
+    return noErr;
+}
+
+#pragma mark - 播放音频回调
+
+OSStatus  CMRenderCallback(void *                      inRefCon,
+                           AudioUnitRenderActionFlags* ioActionFlags,
+                           const AudioTimeStamp*       inTimeStamp,
+                           UInt32                      inBusNumber,
+                           UInt32                      inNumberFrames,
+                           AudioBufferList*            __nullable ioData){
+    CMAudioSession_PCM * session = (__bridge CMAudioSession_PCM *)(inRefCon);
+   
+    memcpy(ioData->mBuffers[0].mData, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
+    ioData->mBuffers[0].mDataByteSize = session->buffList->mBuffers[0].mDataByteSize;
+    
     return noErr;
 }
 
