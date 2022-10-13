@@ -62,10 +62,14 @@
 }
 
 - (IBAction)startAction:(id)sender {
-    self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_Defalut];
+//    if (self.audioPlayer == nil) {
+//        self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_Defalut];
+//    }
+    if (self.audioSession == nil) {
+        self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_Defalut];
+        self.audioSession.delegate = self;
+    }
     
-    self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_Defalut];
-    self.audioSession.delegate = self;
     [self.audioSession cm_startAudioUnitRecorder];
     [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
 }
