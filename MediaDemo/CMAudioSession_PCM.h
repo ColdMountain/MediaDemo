@@ -9,6 +9,8 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
 
+@class CMAudioSession_PCM;
+
 typedef enum {
     CMAudioPCMSampleRate_Defalut = 8000,
     CMAudioPCMSampleRate_22050Hz = 22050,
@@ -21,7 +23,7 @@ typedef enum {
 
 @optional
 
-- (void)cm_audioUnitBackPCM:(NSData*)audioData;
+- (void)cm_audioUnitBackPCM:(NSData*)audioData selfClass:(CMAudioSession_PCM*)selfClass;
 
 @end
 

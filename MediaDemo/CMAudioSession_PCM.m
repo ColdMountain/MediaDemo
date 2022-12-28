@@ -18,6 +18,7 @@
     AudioStreamBasicDescription  dataFormat;
     AVAudioPlayer *audioPlayer;
     AVAudioSession *audioSession;
+    int failed_initalize;
 }
 @end
 
@@ -26,6 +27,7 @@
 - (instancetype)initAudioUnitWithSampleRate:(CMAudioPCMSampleRate)audioRate{
     self = [super init];
     if (self) {
+        failed_initalize = 0;
         self.audioRate = audioRate;
         [self relocationAudio];
         [self initAudioComponent];
@@ -39,6 +41,7 @@
     BOOL success;
     //设置成语音视频模式
     audioSession = [AVAudioSession sharedInstance];
+//    success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
     
     success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
                             withOptions:AVAudioSessionCategoryOptionAllowBluetooth|
@@ -54,7 +57,7 @@
 //                                        AVAudioSessionCategoryOptionAllowBluetooth|
 //                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
 //                                        AVAudioSessionCategoryOptionDuckOthers
-//                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
+////                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
 //                                  error:nil];
     //需要加入设置采样率 声道数 每采样一次的时间
 //    [audioSession setPreferredSampleRate:8000 error:&error];
@@ -214,7 +217,7 @@
     if (status != noErr) {
         NSLog(@"6、AudioUnitGetProperty error, ret: %d", (int)status);
     }
-    
+
     //设置数据播放回调
     AURenderCallbackStruct callBackStruct;
     callBackStruct.inputProc       = CMRenderCallback;
@@ -225,13 +228,13 @@
                                   OUTPUT_BUS,
                                   &callBackStruct,
                                   sizeof(callBackStruct));
-    
+
     if (status != noErr) {
         NSLog(@"7、AudioUnitGetProperty error, ret: %d", (int)status);
     }
-    
-    OSStatus result = AudioUnitInitialize(audioUnit);
-    NSLog(@"result %d", (int)result);
+//    NSLog(@"AudioUnitInitialize: %p", audioUnit);
+//    OSStatus result = AudioUnitInitialize(audioUnit);
+//    NSLog(@"result %d", (int)result);
 }
 
 #pragma mark - 采集音频回调
@@ -260,10 +263,10 @@ static OSStatus RecordingCallback(void *inRefCon,
          NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
                                     length:session->buffList->mBuffers[0].mDataByteSize];
 //         NSLog(@"size = %d", session->buffList->mBuffers[0].mDataByteSize);
-         if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:)]) {
+         if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:selfClass:)]) {
              char* speexByte = (char*)[pcmData bytes];
              NSData *data = [NSData dataWithBytes:speexByte length:pcmData.length];
-             [session.delegate cm_audioUnitBackPCM:data];
+             [session.delegate cm_audioUnitBackPCM:data selfClass:session];
          }
      } else {
          NSLog(@"inNumberFrames is %u", (unsigned int)inNumberFrames);
@@ -320,9 +323,29 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
 //开启AudioUnit
 - (void)cm_startAudioUnitRecorder {
     OSStatus status;
+    status = AudioUnitInitialize(audioUnit);
+    
+    while (status != noErr) {
+        NSLog(@"Failed to initialize the Voice Processing I/O unit. "
+                     "Error=%ld.",
+                    (long)status);
+        failed_initalize++;
+        if (failed_initalize == 5) {
+            //重试5次
+          // Max number of initialization attempts exceeded, hence abort.
+        }
+        [NSThread sleepForTimeInterval:0.1f];
+        status = AudioUnitInitialize(audioUnit);
+      }
     status = AudioOutputUnitStart(audioUnit);
+    
     if (status == noErr) {
         NSLog(@"开启音频");
+        NSLog(@"CMAudioSession_PCM | AudioUnitInitialize: %p", audioUnit);
+        NSLog(@"CMAudioSession_PCM | AudioOutputUnitStart: %p", audioUnit);
+    }else{
+        NSLog(@"CMAudioSession_PCM | AudioUnitInitialize: %p %d", audioUnit, status);
+        NSLog(@"CMAudioSession_PCM | AudioOutputUnitStart: %p %d", audioUnit, status);
     }
 }
 
@@ -331,6 +354,9 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
     OSStatus status = AudioOutputUnitStop(audioUnit);
     if (status == noErr) {
         NSLog(@"停止音频");
+        NSLog(@"CMAudioSession_PCM | AudioOutputUnitStop: %p", audioUnit);
+    }else{
+        NSLog(@"CMAudioSession_PCM | AudioOutputUnitStop: %p %d", audioUnit, status);
     }
 }
 
