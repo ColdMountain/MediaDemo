@@ -10,7 +10,7 @@
 #import "CMAuidoPlayer_PCM.h"
 #import "CMAudioSession_PCM.h"
 
-@interface ViewController ()<CMAudioSessionPCMDelegate>
+@interface ViewController ()<CMAudioSessionPCMDelegate, NSStreamDelegate>
 @property (nonatomic, strong) CMAuidoPlayer_PCM  *audioPlayer;
 @property (nonatomic, strong) CMAudioSession_PCM *audioSession;
 
@@ -36,16 +36,63 @@
     
     self.echoButton.selected = YES;
     [self.echoButton setBackgroundColor:[UIColor redColor]];
+    
+//    NSError* error;
+//    BOOL success;
+//    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+//
+//
+//    success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
+//                            withOptions:AVAudioSessionCategoryOptionAllowBluetooth|
+//                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
+//                                        AVAudioSessionCategoryOptionMixWithOthers|
+//                                        AVAudioSessionCategoryOptionDuckOthers
+//                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
+//                                  error:nil];
+//    success = [audioSession setActive:YES error:&error];
+//    if (self.audioPlayer == nil) {
+//        self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_Defalut];
+//    }
 }
 
-- (void)cm_audioUnitBackPCM:(NSData*)audioData selfClass:(CMAudioSession_PCM*)selfClass{
-//    if (selfClass == self.audioSession1) {
-//        NSLog(@"CMAudioSession_PCM | cm_audioUnitBackPCM: 1、%p", selfClass);
-//    }else if (selfClass == self.audioSession2) {
-//        NSLog(@"CMAudioSession_PCM | cm_audioUnitBackPCM: 2、%p", selfClass);
-//    }else if (selfClass == self.audioSession3) {
-//        NSLog(@"CMAudioSession_PCM | cm_audioUnitBackPCM: 3、%p", selfClass);
+//- (void)stream:(NSInputStream *)stream handleEvent:(NSStreamEvent)eventCode {
+//
+//    switch(eventCode) {
+//        case NSStreamEventOpenCompleted: // 文件打开成功
+//            NSLog(@"文件打开,准备读取数据");
+//            break;
+//        case NSStreamEventHasBytesAvailable: // 读取到数据
+//        {
+//            //每次读取2048个字节数据
+//            //因为AAC编码特性需要1024个采样点的数据一个采样点是2个字节
+//            //所以每次固定获取2048个字节的数据传入编码器
+//            uint8_t buf[2048];
+//            NSInteger readLength = [stream read:buf maxLength:2048];
+//            NSLog(@"输入的数据长度:%ld",readLength);
+//            if (readLength > 0) {
+//                [self.audioPlayer cm_playAudioWithData:(char*)buf andLength:readLength];
+//            }else {
+//                NSLog(@"未读取到数据");
+//            }
+//            break;
+//        }
+//        case NSStreamEventEndEncountered: // 文件读取结束
+//        {
+//            NSLog(@"数据读取结束");
+//            [self.auidoHandle closeFile];
+//            [stream close];
+//            [stream removeFromRunLoop:[NSRunLoop currentRunLoop]
+//                              forMode:NSDefaultRunLoopMode];
+//            stream = nil;
+//            break;
+//        }
+//        default:
+//        break;
 //    }
+//
+//}
+
+- (void)cm_audioUnitBackPCM:(NSData*)audioData selfClass:(CMAudioSession_PCM*)selfClass{
 //    [self.auidoHandle writeData:audioData];
 //    dispatch_async(dispatch_get_main_queue(), ^{
 //        [self.auidoHandle writeData:audioData];
@@ -77,7 +124,7 @@
 //        self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_Defalut];
 //    }
     if (self.audioSession == nil) {
-        self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_Defalut];
+        self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_44100Hz];
         self.audioSession.delegate = self;
     }
     

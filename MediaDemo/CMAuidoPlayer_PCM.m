@@ -18,6 +18,7 @@
     AudioStreamBasicDescription _streamDescription;
     NSInteger _readedPacketIndex;
     UInt32 _renderBufferSize;
+    NSInputStream *inputStream;
 }
 @property (nonatomic, strong) NSMutableArray<NSData*> *paketsArray;
 @end
@@ -52,6 +53,18 @@ static AudioStreamBasicDescription PCMStreamDescription(void*inData)
         _readedPacketIndex = 0;
         _paketsArray = [NSMutableArray arrayWithCapacity:0];
         [self setupOutAudioUnit];
+        
+#if 0
+        NSString *paths = [[NSBundle mainBundle] pathForResource:@"Auido_8000" ofType:@"pcm"];
+        NSData *localData = [[NSData alloc] initWithContentsOfFile:paths];
+        
+        inputStream = [NSInputStream inputStreamWithData:localData];
+        
+        [inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [inputStream open];
+        
+        [self cm_play];
+#endif
     }
     return self;
 }
@@ -114,8 +127,16 @@ OSStatus  CMAURenderCallback(void *                      inRefCon,
     CMAuidoPlayer_PCM * self = (__bridge CMAuidoPlayer_PCM *)(inRefCon);
     
 #if 0
-    ioData->mBuffers[0].mDataByteSize = self->_renderBufferList->mBuffers[0].mDataByteSize;
-    ioData->mBuffers[0].mData = self->_renderBufferList->mBuffers[0].mData;
+//    ioData->mBuffers[0].mDataByteSize = self->_renderBufferList->mBuffers[0].mDataByteSize;
+//    ioData->mBuffers[0].mData = self->_renderBufferList->mBuffers[0].mData;
+    
+    ioData->mBuffers[0].mDataByteSize = (UInt32)[self->inputStream read:ioData->mBuffers[0].mData maxLength:(NSInteger)ioData->mBuffers[0].mDataByteSize];
+    if (ioData->mBuffers[0].mDataByteSize <= 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self cm_stop];
+            });
+        }
+    
 #else
     @synchronized (self) {
 //        if (self->_paketsArray.count >= self->_readedPacketIndex) {
