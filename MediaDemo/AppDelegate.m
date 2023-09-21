@@ -20,6 +20,8 @@
     NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [path objectAtIndex:0];
     [fileManager removeItemAtPath:documentsDirectory error:nil];
+    
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     return YES;
 }
 

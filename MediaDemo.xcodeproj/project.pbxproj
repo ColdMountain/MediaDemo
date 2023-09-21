@@ -131,6 +131,8 @@
 				6AA06390280A73F900EF63A5 /* LaunchScreen.storyboard */,
 				6AA06393280A73F900EF63A5 /* Info.plist */,
 				6AA06394280A73F900EF63A5 /* main.m */,
+				6AA4EF2229C956D900C6BD34 /* Chingy - Gettin' It.ogg */,
+				6AA4EF2129C956D900C6BD34 /* Chingy - Right Thurr.ogg */,
 			);
 			path = MediaDemo;
 			sourceTree = "<group>";
@@ -255,7 +257,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AA4EF2429C956D900C6BD34 /* Chingy - Gettin' It.ogg in Resources */,
 				6AA06392280A73F900EF63A5 /* LaunchScreen.storyboard in Resources */,
+				6AA4EF2329C956D900C6BD34 /* Chingy - Right Thurr.ogg in Resources */,
 				6AA0638F280A73F900EF63A5 /* Assets.xcassets in Resources */,
 				6AA0638D280A73F600EF63A5 /* Main.storyboard in Resources */,
 				6AAF4EBB2963216600EB8088 /* Auido_8000.pcm in Resources */,

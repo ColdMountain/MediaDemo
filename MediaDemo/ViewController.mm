@@ -20,6 +20,8 @@
 @property (nonatomic, strong) NSFileManager *fileManager;
 @property (nonatomic, strong) NSFileHandle  *auidoHandle;
 
+@property (nonatomic, strong) AVAudioPlayer *player;
+
 @property (nonatomic, assign) int num;
 
 @end
@@ -92,12 +94,22 @@
 //
 //}
 
+
+
 - (void)cm_audioUnitBackPCM:(NSData*)audioData selfClass:(CMAudioSession_PCM*)selfClass{
+//    if (selfClass == self.audioSession1) {
+//        NSLog(@"CMAudioSession_PCM | cm_audioUnitBackPCM: 1、%p", selfClass);
+//    }else if (selfClass == self.audioSession2) {
+//        NSLog(@"CMAudioSession_PCM | cm_audioUnitBackPCM: 2、%p", selfClass);
+//    }else if (selfClass == self.audioSession3) {
+//        NSLog(@"CMAudioSession_PCM | cm_audioUnitBackPCM: 3、%p", selfClass);
+//    }
+    
 //    [self.auidoHandle writeData:audioData];
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [self.auidoHandle writeData:audioData];
-//        [self.audioPlayer cm_playAudioWithData:(char*)[audioData bytes] andLength:audioData.length];
-//    });
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.auidoHandle writeData:audioData];
+        [self.audioPlayer cm_playAudioWithData:(char*)[audioData bytes] andLength:audioData.length];
+    });
 }
 - (IBAction)echoAction:(UIButton*)sender {
     sender.selected = !sender.selected;
@@ -121,10 +133,10 @@
 
 - (IBAction)startAction:(id)sender {
 //    if (self.audioPlayer == nil) {
-//        self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_Defalut];
+//        self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_16000Hz];
 //    }
     if (self.audioSession == nil) {
-        self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_44100Hz];
+        self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_16000Hz];
         self.audioSession.delegate = self;
     }
     

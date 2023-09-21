@@ -19,6 +19,7 @@
     AVAudioPlayer *audioPlayer;
     AVAudioSession *audioSession;
     int failed_initalize;
+    Byte *recorderBuffer;
 }
 @end
 
@@ -28,6 +29,7 @@
     self = [super init];
     if (self) {
         failed_initalize = 0;
+        recorderBuffer = malloc(0x10000);
         self.audioRate = audioRate;
         [self relocationAudio];
         [self initAudioComponent];
@@ -248,21 +250,36 @@ static OSStatus RecordingCallback(void *inRefCon,
     CMAudioSession_PCM *session = (__bridge CMAudioSession_PCM *)inRefCon;
     OSStatus status = noErr;
     UInt16 numSamples = inNumberFrames*1;
+    
+//    uint8_t  kAudioCaptureData[4*1024];//numSamples * sizeof(UInt16)
+    uint8_t  kAudioCaptureData[numSamples * sizeof(UInt32)];
+    int32_t  kAudioCaptureSize           = inNumberFrames * 2;
+    
      if (inNumberFrames > 0) {
          session->buffList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
          session->buffList->mNumberBuffers = 1;
          session->buffList->mBuffers[0].mNumberChannels = 1;
-         session->buffList->mBuffers[0].mDataByteSize = numSamples * sizeof(UInt16);
-         session->buffList->mBuffers[0].mData = malloc(numSamples * sizeof(UInt16));
+         session->buffList->mBuffers[0].mDataByteSize = kAudioCaptureSize;
+         session->buffList->mBuffers[0].mData = kAudioCaptureData;
+         
+         
+//         session->buffList->mBuffers[0].mDataByteSize = numSamples * sizeof(UInt16);
+//         session->buffList->mBuffers[0].mData = malloc(numSamples * sizeof(UInt16));
+         
+//         NSLog(@"mData %lu", numSamples * sizeof(UInt16));
+//         NSLog(@"size = %d", kAudioCaptureSize);
          status = AudioUnitRender(session->audioUnit,
                                   ioActionFlags,
                                   inTimeStamp,
                                   inBusNumber,
                                   inNumberFrames,
                                   session->buffList);
+         
          NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
                                     length:session->buffList->mBuffers[0].mDataByteSize];
-//         NSLog(@"size = %d", session->buffList->mBuffers[0].mDataByteSize);
+         
+         memcpy(session->recorderBuffer, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
+         
          if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:selfClass:)]) {
              char* speexByte = (char*)[pcmData bytes];
              NSData *data = [NSData dataWithBytes:speexByte length:pcmData.length];
@@ -271,6 +288,8 @@ static OSStatus RecordingCallback(void *inRefCon,
      } else {
          NSLog(@"inNumberFrames is %u", (unsigned int)inNumberFrames);
      }
+    
+    
     return noErr;
 }
 
@@ -283,10 +302,7 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
                            UInt32                      inNumberFrames,
                            AudioBufferList*            __nullable ioData){
     CMAudioSession_PCM * session = (__bridge CMAudioSession_PCM *)(inRefCon);
-   
-    memcpy(ioData->mBuffers[0].mData, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
-    ioData->mBuffers[0].mDataByteSize = session->buffList->mBuffers[0].mDataByteSize;
-    
+    memcpy(ioData->mBuffers[0].mData, session->recorderBuffer, ioData->mBuffers[0].mDataByteSize);
     return noErr;
 }
 

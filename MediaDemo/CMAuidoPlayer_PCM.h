@@ -10,6 +10,7 @@
 
 typedef enum {
     CMAudioPlayerSampleRate_Defalut = 8000,
+    CMAudioPlayerSampleRate_16000Hz = 16000,
     CMAudioPlayerSampleRate_22050Hz = 22050,
     CMAudioPlayerSampleRate_24000Hz = 24000,
     CMAudioPlayerSampleRate_32000Hz = 32000,
