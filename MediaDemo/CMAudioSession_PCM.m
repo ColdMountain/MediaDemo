@@ -65,7 +65,7 @@
 //    [audioSession setPreferredSampleRate:8000 error:&error];
 //    [audioSession setPreferredInputNumberOfChannels:1 error:&error];
 //    [audioSession setPreferredIOBufferDuration:0.125 error:&error];
-    
+     
 //    success = [audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:&error];
     success = [audioSession setActive:YES error:&error];
     
@@ -277,7 +277,7 @@ static OSStatus RecordingCallback(void *inRefCon,
          
          NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
                                     length:session->buffList->mBuffers[0].mDataByteSize];
-         
+         //把回调返回的音频数据 copy到 另一个Buffer中保存
          memcpy(session->recorderBuffer, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
          
          if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:selfClass:)]) {
