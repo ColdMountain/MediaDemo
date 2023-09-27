@@ -29,7 +29,8 @@
     self = [super init];
     if (self) {
         failed_initalize = 0;
-        recorderBuffer = malloc(0x10000);
+//        recorderBuffer = malloc(0x10000);
+        recorderBuffer = malloc(100*1024*1024);
         self.audioRate = audioRate;
         [self relocationAudio];
         [self initAudioComponent];
@@ -43,7 +44,6 @@
     BOOL success;
     //设置成语音视频模式
     audioSession = [AVAudioSession sharedInstance];
-//    success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
     
     success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
                             withOptions:AVAudioSessionCategoryOptionAllowBluetooth|
@@ -53,14 +53,6 @@
 //                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
                                   error:nil];
     
-//    success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
-//                                   mode:AVAudioSessionModeVideoChat
-//                                options:
-//                                        AVAudioSessionCategoryOptionAllowBluetooth|
-//                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
-//                                        AVAudioSessionCategoryOptionDuckOthers
-////                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
-//                                  error:nil];
     //需要加入设置采样率 声道数 每采样一次的时间
 //    [audioSession setPreferredSampleRate:8000 error:&error];
 //    [audioSession setPreferredInputNumberOfChannels:1 error:&error];
@@ -169,7 +161,7 @@
         NSLog(@"3、AudioUnitGetProperty error, ret: %d", (int)status);
     }
     
-    AudioStreamBasicDescription outputFormat = inputFormat;
+//    AudioStreamBasicDescription outputFormat = inputFormat;
     
     UInt32 flag = 1;
     status = AudioUnitSetProperty(audioUnit,
