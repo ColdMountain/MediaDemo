@@ -6,6 +6,7 @@
 //
 
 #import "CMAudioSession_PCM.h"
+//#include "SoundTouch.h"
 
 #define INPUT_BUS 1
 #define OUTPUT_BUS 0
@@ -20,6 +21,7 @@
     AVAudioSession *audioSession;
     int failed_initalize;
     Byte *recorderBuffer;
+//    soundtouch::SoundTouch mSoundTouch; //变声器对象
 }
 @end
 
@@ -31,9 +33,20 @@
         failed_initalize = 0;
 //        recorderBuffer = malloc(0x10000);
         recorderBuffer = malloc(100*1024*1024);
+//        recorderBuffer[100*1024*1024];
         self.audioRate = audioRate;
         [self relocationAudio];
         [self initAudioComponent];
+        
+//        mSoundTouch.setSampleRate(8000); //采样率
+//        mSoundTouch.setChannels(1);       //设置声音的声道
+//        mSoundTouch.setTempoChange(0);//这个就是传说中的变速不变调
+//        mSoundTouch.setPitchSemiTones(11);//设置声音的pitch (集音高变化semi-tones相比原来的音调)
+//        mSoundTouch.setRateChange(0);//设置声音的速率
+//        
+//        mSoundTouch.setSetting(SETTING_SEQUENCE_MS, 40);
+//        mSoundTouch.setSetting(SETTING_SEEKWINDOW_MS, 15); //寻找帧长
+//        mSoundTouch.setSetting(SETTING_OVERLAP_MS, 6);  //重叠帧长
     }
     return self;
 }
@@ -226,9 +239,9 @@
     if (status != noErr) {
         NSLog(@"7、AudioUnitGetProperty error, ret: %d", (int)status);
     }
-//    NSLog(@"AudioUnitInitialize: %p", audioUnit);
-//    OSStatus result = AudioUnitInitialize(audioUnit);
-//    NSLog(@"result %d", (int)result);
+    NSLog(@"AudioUnitInitialize: %p", audioUnit);
+    OSStatus result = AudioUnitInitialize(audioUnit);
+    NSLog(@"result %d", (int)result);
 }
 
 #pragma mark - 采集音频回调
@@ -243,8 +256,8 @@ static OSStatus RecordingCallback(void *inRefCon,
     OSStatus status = noErr;
     UInt16 numSamples = inNumberFrames*1;
     
-//    uint8_t  kAudioCaptureData[4*1024];//numSamples * sizeof(UInt16)
-    uint8_t  kAudioCaptureData[numSamples * sizeof(UInt32)];
+    uint8_t  kAudioCaptureData[inNumberFrames*2];//numSamples * sizeof(UInt16)
+//    uint8_t  kAudioCaptureData[numSamples * sizeof(UInt32)];
     int32_t  kAudioCaptureSize           = inNumberFrames * 2;
     
      if (inNumberFrames > 0) {
@@ -254,18 +267,22 @@ static OSStatus RecordingCallback(void *inRefCon,
          session->buffList->mBuffers[0].mDataByteSize = kAudioCaptureSize;
          session->buffList->mBuffers[0].mData = kAudioCaptureData;
          
-         
-//         session->buffList->mBuffers[0].mDataByteSize = numSamples * sizeof(UInt16);
-//         session->buffList->mBuffers[0].mData = malloc(numSamples * sizeof(UInt16));
-         
 //         NSLog(@"mData %lu", numSamples * sizeof(UInt16));
 //         NSLog(@"size = %d", kAudioCaptureSize);
+#if 0
+         NSLog(@"inNumberFrames :%d inBusNumber %d", inNumberFrames, inBusNumber);
+#endif
+         
+         
          status = AudioUnitRender(session->audioUnit,
                                   ioActionFlags,
                                   inTimeStamp,
                                   inBusNumber,
                                   inNumberFrames,
                                   session->buffList);
+         if (status != noErr) {
+             NSLog(@"AudioUnitRender error: %d",status);
+         }
          
          NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
                                     length:session->buffList->mBuffers[0].mDataByteSize];

@@ -10,7 +10,12 @@
 #import "CMAuidoPlayer_PCM.h"
 #import "CMAudioSession_PCM.h"
 
+#include "SoundTouch.h"
+
 @interface ViewController ()<CMAudioSessionPCMDelegate, NSStreamDelegate>
+{
+    soundtouch::SoundTouch mSoundTouch; //变声器对象
+}
 @property (nonatomic, strong) CMAuidoPlayer_PCM  *audioPlayer;
 @property (nonatomic, strong) CMAudioSession_PCM *audioSession;
 
@@ -19,11 +24,10 @@
 
 @property (nonatomic, strong) NSFileManager *fileManager;
 @property (nonatomic, strong) NSFileHandle  *auidoHandle;
-
+@property (nonatomic, strong) NSMutableData *soundData;
 @property (nonatomic, strong) AVAudioPlayer *player;
 
 @property (nonatomic, assign) int num;
-
 @end
 
 @implementation ViewController
@@ -39,6 +43,18 @@
     self.echoButton.selected = YES;
     [self.echoButton setBackgroundColor:[UIColor redColor]];
     
+    self.soundData = [[NSMutableData alloc]init];
+    
+    mSoundTouch.setSampleRate(8000); //采样率
+    mSoundTouch.setChannels(1);       //设置声音的声道
+    mSoundTouch.setTempoChange(0);//这个就是传说中的变速不变调
+    mSoundTouch.setPitchSemiTones(-6);//设置声音的pitch (集音高变化semi-tones相比原来的音调)
+    mSoundTouch.setRateChange(0);//设置声音的速率
+    
+    mSoundTouch.setSetting(SETTING_SEQUENCE_MS, 40);
+    mSoundTouch.setSetting(SETTING_SEEKWINDOW_MS, 15); //寻找帧长
+    mSoundTouch.setSetting(SETTING_OVERLAP_MS, 6);  //重叠帧长
+    
 //    NSError* error;
 //    BOOL success;
 //    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -49,7 +65,7 @@
 //                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
 //                                        AVAudioSessionCategoryOptionMixWithOthers|
 //                                        AVAudioSessionCategoryOptionDuckOthers
-//                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
+////                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
 //                                  error:nil];
 //    success = [audioSession setActive:YES error:&error];
 //    if (self.audioPlayer == nil) {
@@ -106,10 +122,21 @@
 //    }
     
 //    [self.auidoHandle writeData:audioData];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.auidoHandle writeData:audioData];
-        [self.audioPlayer cm_playAudioWithData:(char*)[audioData bytes] andLength:audioData.length];
-    });
+    //变声器相关内容
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        int nSamples = (int)audioData.length / 2;
+//        int pcmsize = (int)audioData.length;
+//        short *samples = new short[pcmsize];
+//        
+//        self->mSoundTouch.putSamples((short *)[audioData bytes], nSamples);
+//        int numSamples = 0;
+//        numSamples = self->mSoundTouch.receiveSamples(samples, pcmsize);
+//        
+//        [self.soundData appendBytes:samples length:numSamples*2];
+//
+////        [self.auidoHandle writeData:self.soundData];
+//        [self.audioPlayer cm_playAudioWithData:(char*)samples andLength:pcmsize];
+//    });
 }
 - (IBAction)echoAction:(UIButton*)sender {
     sender.selected = !sender.selected;
@@ -133,10 +160,10 @@
 
 - (IBAction)startAction:(id)sender {
 //    if (self.audioPlayer == nil) {
-//        self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_16000Hz];
+//        self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_Defalut];
 //    }
     if (self.audioSession == nil) {
-        self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_16000Hz];
+        self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_Defalut];
         self.audioSession.delegate = self;
     }
     
@@ -146,11 +173,12 @@
 - (IBAction)stopAction:(id)sender {
     [self.audioPlayer cm_stop];
     [self.audioSession cm_stopAudioUnitRecorder];
+//    [self.auidoHandle closeFile];
 }
 - (IBAction)closeAction:(id)sender {
     [self.audioPlayer cm_close];
     [self.audioSession cm_closeAudioUnitRecorder];
-    [self.auidoHandle closeFile];
+//    [self.auidoHandle closeFile];
 //    self.audioSession = nil;
 //    self.audioPlayer = nil;
     self.button.selected = NO;

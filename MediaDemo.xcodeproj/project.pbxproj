@@ -21,6 +21,20 @@
 		6AA063BC280A743D00EF63A5 /* CMAudioSession_PCM.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA063BA280A743D00EF63A5 /* CMAudioSession_PCM.m */; };
 		6AAF4EBA2963216600EB8088 /* Auido_44100.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6AAF4EB82963216600EB8088 /* Auido_44100.pcm */; };
 		6AAF4EBB2963216600EB8088 /* Auido_8000.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6AAF4EB92963216600EB8088 /* Auido_8000.pcm */; };
+		6ACB3CD22B2A93330091094A /* InterpolateLinear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB42B2A93330091094A /* InterpolateLinear.cpp */; };
+		6ACB3CD32B2A93330091094A /* InterpolateCubic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB62B2A93330091094A /* InterpolateCubic.cpp */; };
+		6ACB3CD42B2A93330091094A /* AAFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB72B2A93330091094A /* AAFilter.cpp */; };
+		6ACB3CD52B2A93330091094A /* sse_optimized.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB82B2A93330091094A /* sse_optimized.cpp */; };
+		6ACB3CD62B2A93330091094A /* TDStretch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB92B2A93330091094A /* TDStretch.cpp */; };
+		6ACB3CD72B2A93330091094A /* cpu_detect_x86.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CC42B2A93330091094A /* cpu_detect_x86.cpp */; };
+		6ACB3CD82B2A93330091094A /* PeakFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CC52B2A93330091094A /* PeakFinder.cpp */; };
+		6ACB3CD92B2A93330091094A /* FIFOSampleBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CC62B2A93330091094A /* FIFOSampleBuffer.cpp */; };
+		6ACB3CDA2B2A93330091094A /* FIRFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CC72B2A93330091094A /* FIRFilter.cpp */; };
+		6ACB3CDB2B2A93330091094A /* mmx_optimized.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CCA2B2A93330091094A /* mmx_optimized.cpp */; };
+		6ACB3CDC2B2A93330091094A /* RateTransposer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CCB2B2A93330091094A /* RateTransposer.cpp */; };
+		6ACB3CDD2B2A93330091094A /* SoundTouch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CCC2B2A93330091094A /* SoundTouch.cpp */; };
+		6ACB3CDE2B2A93330091094A /* BPMDetect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CCD2B2A93330091094A /* BPMDetect.cpp */; };
+		6ACB3CDF2B2A93330091094A /* InterpolateShannon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CD02B2A93330091094A /* InterpolateShannon.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +78,36 @@
 		6AA063BB280A743D00EF63A5 /* CMAudioSession_PCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMAudioSession_PCM.h; sourceTree = "<group>"; };
 		6AAF4EB82963216600EB8088 /* Auido_44100.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = Auido_44100.pcm; sourceTree = "<group>"; };
 		6AAF4EB92963216600EB8088 /* Auido_8000.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = Auido_8000.pcm; sourceTree = "<group>"; };
+		6ACB3C6C2B295C580091094A /* libSoundTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSoundTouch.a; path = MediaDemo/SoundTouch/libSoundTouch.a; sourceTree = "<group>"; };
+		6ACB3CB42B2A93330091094A /* InterpolateLinear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InterpolateLinear.cpp; sourceTree = "<group>"; };
+		6ACB3CB52B2A93330091094A /* TDStretch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDStretch.h; sourceTree = "<group>"; };
+		6ACB3CB62B2A93330091094A /* InterpolateCubic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InterpolateCubic.cpp; sourceTree = "<group>"; };
+		6ACB3CB72B2A93330091094A /* AAFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AAFilter.cpp; sourceTree = "<group>"; };
+		6ACB3CB82B2A93330091094A /* sse_optimized.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sse_optimized.cpp; sourceTree = "<group>"; };
+		6ACB3CB92B2A93330091094A /* TDStretch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TDStretch.cpp; sourceTree = "<group>"; };
+		6ACB3CBA2B2A93330091094A /* InterpolateShannon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterpolateShannon.h; sourceTree = "<group>"; };
+		6ACB3CBC2B2A93330091094A /* FIFOSampleBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FIFOSampleBuffer.h; sourceTree = "<group>"; };
+		6ACB3CBD2B2A93330091094A /* STTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STTypes.h; sourceTree = "<group>"; };
+		6ACB3CBE2B2A93330091094A /* BPMDetect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPMDetect.h; sourceTree = "<group>"; };
+		6ACB3CBF2B2A93330091094A /* SoundTouch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundTouch.h; sourceTree = "<group>"; };
+		6ACB3CC02B2A93330091094A /* soundtouch_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = soundtouch_config.h; sourceTree = "<group>"; };
+		6ACB3CC12B2A93330091094A /* FIFOSamplePipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FIFOSamplePipe.h; sourceTree = "<group>"; };
+		6ACB3CC22B2A93330091094A /* cpu_detect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpu_detect.h; sourceTree = "<group>"; };
+		6ACB3CC32B2A93330091094A /* AAFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAFilter.h; sourceTree = "<group>"; };
+		6ACB3CC42B2A93330091094A /* cpu_detect_x86.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cpu_detect_x86.cpp; sourceTree = "<group>"; };
+		6ACB3CC52B2A93330091094A /* PeakFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeakFinder.cpp; sourceTree = "<group>"; };
+		6ACB3CC62B2A93330091094A /* FIFOSampleBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FIFOSampleBuffer.cpp; sourceTree = "<group>"; };
+		6ACB3CC72B2A93330091094A /* FIRFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FIRFilter.cpp; sourceTree = "<group>"; };
+		6ACB3CC82B2A93330091094A /* FIRFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FIRFilter.h; sourceTree = "<group>"; };
+		6ACB3CC92B2A93330091094A /* InterpolateCubic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterpolateCubic.h; sourceTree = "<group>"; };
+		6ACB3CCA2B2A93330091094A /* mmx_optimized.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mmx_optimized.cpp; sourceTree = "<group>"; };
+		6ACB3CCB2B2A93330091094A /* RateTransposer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RateTransposer.cpp; sourceTree = "<group>"; };
+		6ACB3CCC2B2A93330091094A /* SoundTouch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoundTouch.cpp; sourceTree = "<group>"; };
+		6ACB3CCD2B2A93330091094A /* BPMDetect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BPMDetect.cpp; sourceTree = "<group>"; };
+		6ACB3CCE2B2A93330091094A /* PeakFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeakFinder.h; sourceTree = "<group>"; };
+		6ACB3CCF2B2A93330091094A /* RateTransposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RateTransposer.h; sourceTree = "<group>"; };
+		6ACB3CD02B2A93330091094A /* InterpolateShannon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InterpolateShannon.cpp; sourceTree = "<group>"; };
+		6ACB3CD12B2A93330091094A /* InterpolateLinear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterpolateLinear.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +142,7 @@
 				6AA0639D280A73FA00EF63A5 /* MediaDemoTests */,
 				6AA063A7280A73FA00EF63A5 /* MediaDemoUITests */,
 				6AA06380280A73F600EF63A5 /* Products */,
+				6ACB3C6B2B295C580091094A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -114,6 +159,7 @@
 		6AA06381280A73F600EF63A5 /* MediaDemo */ = {
 			isa = PBXGroup;
 			children = (
+				6ACB3C6E2B295C770091094A /* SoundTouch */,
 				6AAF4EB92963216600EB8088 /* Auido_8000.pcm */,
 				6AAF4EB82963216600EB8088 /* Auido_44100.pcm */,
 				6AA06382280A73F600EF63A5 /* AppDelegate.h */,
@@ -131,8 +177,6 @@
 				6AA06390280A73F900EF63A5 /* LaunchScreen.storyboard */,
 				6AA06393280A73F900EF63A5 /* Info.plist */,
 				6AA06394280A73F900EF63A5 /* main.m */,
-				6AA4EF2229C956D900C6BD34 /* Chingy - Gettin' It.ogg */,
-				6AA4EF2129C956D900C6BD34 /* Chingy - Right Thurr.ogg */,
 			);
 			path = MediaDemo;
 			sourceTree = "<group>";
@@ -152,6 +196,58 @@
 				6AA063AA280A73FA00EF63A5 /* MediaDemoUITestsLaunchTests.m */,
 			);
 			path = MediaDemoUITests;
+			sourceTree = "<group>";
+		};
+		6ACB3C6B2B295C580091094A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6ACB3C6C2B295C580091094A /* libSoundTouch.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6ACB3C6E2B295C770091094A /* SoundTouch */ = {
+			isa = PBXGroup;
+			children = (
+				6ACB3CB72B2A93330091094A /* AAFilter.cpp */,
+				6ACB3CC32B2A93330091094A /* AAFilter.h */,
+				6ACB3CCD2B2A93330091094A /* BPMDetect.cpp */,
+				6ACB3CC42B2A93330091094A /* cpu_detect_x86.cpp */,
+				6ACB3CC22B2A93330091094A /* cpu_detect.h */,
+				6ACB3CC62B2A93330091094A /* FIFOSampleBuffer.cpp */,
+				6ACB3CC72B2A93330091094A /* FIRFilter.cpp */,
+				6ACB3CC82B2A93330091094A /* FIRFilter.h */,
+				6ACB3CBB2B2A93330091094A /* include */,
+				6ACB3CB62B2A93330091094A /* InterpolateCubic.cpp */,
+				6ACB3CC92B2A93330091094A /* InterpolateCubic.h */,
+				6ACB3CB42B2A93330091094A /* InterpolateLinear.cpp */,
+				6ACB3CD12B2A93330091094A /* InterpolateLinear.h */,
+				6ACB3CD02B2A93330091094A /* InterpolateShannon.cpp */,
+				6ACB3CBA2B2A93330091094A /* InterpolateShannon.h */,
+				6ACB3CCA2B2A93330091094A /* mmx_optimized.cpp */,
+				6ACB3CC52B2A93330091094A /* PeakFinder.cpp */,
+				6ACB3CCE2B2A93330091094A /* PeakFinder.h */,
+				6ACB3CCB2B2A93330091094A /* RateTransposer.cpp */,
+				6ACB3CCF2B2A93330091094A /* RateTransposer.h */,
+				6ACB3CCC2B2A93330091094A /* SoundTouch.cpp */,
+				6ACB3CB82B2A93330091094A /* sse_optimized.cpp */,
+				6ACB3CB92B2A93330091094A /* TDStretch.cpp */,
+				6ACB3CB52B2A93330091094A /* TDStretch.h */,
+			);
+			path = SoundTouch;
+			sourceTree = "<group>";
+		};
+		6ACB3CBB2B2A93330091094A /* include */ = {
+			isa = PBXGroup;
+			children = (
+				6ACB3CBC2B2A93330091094A /* FIFOSampleBuffer.h */,
+				6ACB3CBD2B2A93330091094A /* STTypes.h */,
+				6ACB3CBE2B2A93330091094A /* BPMDetect.h */,
+				6ACB3CBF2B2A93330091094A /* SoundTouch.h */,
+				6ACB3CC02B2A93330091094A /* soundtouch_config.h */,
+				6ACB3CC12B2A93330091094A /* FIFOSamplePipe.h */,
+			);
+			path = include;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,9 +353,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6AA4EF2429C956D900C6BD34 /* Chingy - Gettin' It.ogg in Resources */,
 				6AA06392280A73F900EF63A5 /* LaunchScreen.storyboard in Resources */,
-				6AA4EF2329C956D900C6BD34 /* Chingy - Right Thurr.ogg in Resources */,
 				6AA0638F280A73F900EF63A5 /* Assets.xcassets in Resources */,
 				6AA0638D280A73F600EF63A5 /* Main.storyboard in Resources */,
 				6AAF4EBB2963216600EB8088 /* Auido_8000.pcm in Resources */,
@@ -288,12 +382,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6ACB3CD82B2A93330091094A /* PeakFinder.cpp in Sources */,
+				6ACB3CD72B2A93330091094A /* cpu_detect_x86.cpp in Sources */,
 				6AA063BC280A743D00EF63A5 /* CMAudioSession_PCM.m in Sources */,
+				6ACB3CDA2B2A93330091094A /* FIRFilter.cpp in Sources */,
+				6ACB3CDC2B2A93330091094A /* RateTransposer.cpp in Sources */,
+				6ACB3CDD2B2A93330091094A /* SoundTouch.cpp in Sources */,
 				6AA063B9280A741E00EF63A5 /* CMAuidoPlayer_PCM.m in Sources */,
+				6ACB3CD32B2A93330091094A /* InterpolateCubic.cpp in Sources */,
+				6ACB3CD52B2A93330091094A /* sse_optimized.cpp in Sources */,
+				6ACB3CDE2B2A93330091094A /* BPMDetect.cpp in Sources */,
+				6ACB3CD62B2A93330091094A /* TDStretch.cpp in Sources */,
+				6ACB3CDB2B2A93330091094A /* mmx_optimized.cpp in Sources */,
 				6AA0638A280A73F600EF63A5 /* ViewController.mm in Sources */,
 				6AA06384280A73F600EF63A5 /* AppDelegate.m in Sources */,
 				6AA06395280A73F900EF63A5 /* main.m in Sources */,
+				6ACB3CD42B2A93330091094A /* AAFilter.cpp in Sources */,
+				6ACB3CD92B2A93330091094A /* FIFOSampleBuffer.cpp in Sources */,
 				6AA06387280A73F600EF63A5 /* SceneDelegate.m in Sources */,
+				6ACB3CD22B2A93330091094A /* InterpolateLinear.cpp in Sources */,
+				6ACB3CDF2B2A93330091094A /* InterpolateShannon.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -470,6 +578,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W53E63XUBU;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/MediaDemo/SoundTouch",
+				);
 				INFOPLIST_FILE = MediaDemo/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "需要使用Mic";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -480,8 +592,14 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/MediaDemo/SoundTouch",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = ColdMountain.MediaDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -498,6 +616,10 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W53E63XUBU;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/MediaDemo/SoundTouch",
+				);
 				INFOPLIST_FILE = MediaDemo/Info.plist;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "需要使用Mic";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -508,8 +630,14 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/MediaDemo/SoundTouch",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = ColdMountain.MediaDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
