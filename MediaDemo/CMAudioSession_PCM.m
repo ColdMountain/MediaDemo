@@ -6,7 +6,7 @@
 //
 
 #import "CMAudioSession_PCM.h"
-#include "SoundTouch.h"
+//#include "SoundTouch.h"
 
 #define INPUT_BUS 1
 #define OUTPUT_BUS 0
@@ -21,7 +21,7 @@
     AVAudioSession *audioSession;
     int failed_initalize;
     Byte *recorderBuffer;
-    soundtouch::SoundTouch mSoundTouch; //变声器对象
+//    soundtouch::SoundTouch mSoundTouch; //变声器对象
 }
 @end
 
@@ -32,21 +32,21 @@
     if (self) {
         failed_initalize = 0;
 //        recorderBuffer = malloc(0x10000);
-//        recorderBuffer = malloc(100*1024*1024);
+        recorderBuffer = malloc(100*1024*1024);
 //        recorderBuffer[100*1024*1024];
         self.audioRate = audioRate;
         [self relocationAudio];
         [self initAudioComponent];
         
-        mSoundTouch.setSampleRate(8000); //采样率
-        mSoundTouch.setChannels(1);       //设置声音的声道
-        mSoundTouch.setTempoChange(0);//这个就是传说中的变速不变调
-        mSoundTouch.setPitchSemiTones(11);//设置声音的pitch (集音高变化semi-tones相比原来的音调)
-        mSoundTouch.setRateChange(0);//设置声音的速率
-        
-        mSoundTouch.setSetting(SETTING_SEQUENCE_MS, 40);
-        mSoundTouch.setSetting(SETTING_SEEKWINDOW_MS, 15); //寻找帧长
-        mSoundTouch.setSetting(SETTING_OVERLAP_MS, 6);  //重叠帧长
+//        mSoundTouch.setSampleRate(8000); //采样率
+//        mSoundTouch.setChannels(1);       //设置声音的声道
+//        mSoundTouch.setTempoChange(0);//这个就是传说中的变速不变调
+//        mSoundTouch.setPitchSemiTones(11);//设置声音的pitch (集音高变化semi-tones相比原来的音调)
+//        mSoundTouch.setRateChange(0);//设置声音的速率
+//        
+//        mSoundTouch.setSetting(SETTING_SEQUENCE_MS, 40);
+//        mSoundTouch.setSetting(SETTING_SEEKWINDOW_MS, 15); //寻找帧长
+//        mSoundTouch.setSetting(SETTING_OVERLAP_MS, 6);  //重叠帧长
     }
     return self;
 }
