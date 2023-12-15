@@ -74,11 +74,10 @@
 		6AA063AA280A73FA00EF63A5 /* MediaDemoUITestsLaunchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MediaDemoUITestsLaunchTests.m; sourceTree = "<group>"; };
 		6AA063B7280A741E00EF63A5 /* CMAuidoPlayer_PCM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAuidoPlayer_PCM.m; sourceTree = "<group>"; };
 		6AA063B8280A741E00EF63A5 /* CMAuidoPlayer_PCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMAuidoPlayer_PCM.h; sourceTree = "<group>"; };
-		6AA063BA280A743D00EF63A5 /* CMAudioSession_PCM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAudioSession_PCM.m; sourceTree = "<group>"; };
+		6AA063BA280A743D00EF63A5 /* CMAudioSession_PCM.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = CMAudioSession_PCM.m; sourceTree = "<group>"; };
 		6AA063BB280A743D00EF63A5 /* CMAudioSession_PCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMAudioSession_PCM.h; sourceTree = "<group>"; };
 		6AAF4EB82963216600EB8088 /* Auido_44100.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = Auido_44100.pcm; sourceTree = "<group>"; };
 		6AAF4EB92963216600EB8088 /* Auido_8000.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = Auido_8000.pcm; sourceTree = "<group>"; };
-		6ACB3C6C2B295C580091094A /* libSoundTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSoundTouch.a; path = MediaDemo/SoundTouch/libSoundTouch.a; sourceTree = "<group>"; };
 		6ACB3CB42B2A93330091094A /* InterpolateLinear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InterpolateLinear.cpp; sourceTree = "<group>"; };
 		6ACB3CB52B2A93330091094A /* TDStretch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDStretch.h; sourceTree = "<group>"; };
 		6ACB3CB62B2A93330091094A /* InterpolateCubic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InterpolateCubic.cpp; sourceTree = "<group>"; };
@@ -201,7 +200,6 @@
 		6ACB3C6B2B295C580091094A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6ACB3C6C2B295C580091094A /* libSoundTouch.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
