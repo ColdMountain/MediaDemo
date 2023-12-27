@@ -138,6 +138,20 @@
     AudioComponent inputComponent = AudioComponentFindNext(NULL, &desc);
     // 获得 Audio Unit
     status = AudioComponentInstanceNew(inputComponent, &audioUnit);
+    
+    
+//    AudioComponentDescription varispeedDesc;
+//    varispeedDesc.componentType = kAudioUnitType_FormatConverter;
+//    varispeedDesc.componentSubType = kAudioUnitSubType_Varispeed;
+//    varispeedDesc.componentManufacturer = kAudioUnitManufacturer_Apple;
+//    varispeedDesc.componentFlags = 0;
+//    varispeedDesc.componentFlagsMask = 0;
+//    
+//    AudioComponent inputComponent1 = AudioComponentFindNext(NULL, &varispeedDesc);
+//    // 获得 Audio Unit
+//    status = AudioComponentInstanceNew(inputComponent1, &audioUnit);
+    
+    
     if (status != noErr) {
         NSLog(@"1、AudioUnitGetProperty error, ret: %d", (int)status);
     }
@@ -152,6 +166,7 @@
     inputFormat.mBytesPerFrame    = (inputFormat.mBitsPerChannel / 8) * inputFormat.mChannelsPerFrame;
     inputFormat.mBytesPerPacket   = inputFormat.mBytesPerFrame;
     [self printAudioStreamBasicDescription:inputFormat];
+    
     
     //录音输入
     status = AudioUnitSetProperty(audioUnit,

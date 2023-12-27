@@ -9,15 +9,17 @@
 
 #import "CMAuidoPlayer_PCM.h"
 #import "CMAudioSession_PCM.h"
+#import "CMAudioSessionSpeed.h"
 
 #include "SoundTouch.h"
 
-@interface ViewController ()<CMAudioSessionPCMDelegate, NSStreamDelegate>
+@interface ViewController ()<CMAudioSessionPCMDelegate, CMAudioSessionSpeedDelegate, NSStreamDelegate>
 {
     soundtouch::SoundTouch mSoundTouch; //变声器对象
 }
 @property (nonatomic, strong) CMAuidoPlayer_PCM  *audioPlayer;
 @property (nonatomic, strong) CMAudioSession_PCM *audioSession;
+@property (nonatomic, strong) CMAudioSessionSpeed *audioSpeed;
 
 @property (weak, nonatomic) IBOutlet UIButton *button;
 @property (weak, nonatomic) IBOutlet UIButton *echoButton;
@@ -110,7 +112,9 @@
 //
 //}
 
-
+- (void)audioUnitBackPCM:(NSData*)audioData{
+    [self.auidoHandle writeData:audioData];
+}
 
 - (void)cm_audioUnitBackPCM:(NSData*)audioData selfClass:(CMAudioSession_PCM*)selfClass{
 //    if (selfClass == self.audioSession1) {
@@ -152,9 +156,11 @@
 - (IBAction)receiverAndSpeaker:(UIButton*)sender {
     sender.selected = !sender.selected;
     if (sender.selected) {
-        [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideNone];
+//        [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideNone];
+        [self.audioSpeed setOutputAudioPort:AVAudioSessionPortOverrideNone];
     }else {
-        [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
+//        [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
+        [self.audioSpeed setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
     }
 }
 
@@ -162,26 +168,46 @@
 //    if (self.audioPlayer == nil) {
 //        self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_Defalut];
 //    }
+    
+#if 0
     if (self.audioSession == nil) {
         self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_Defalut];
         self.audioSession.delegate = self;
     }
-    
     [self.audioSession cm_startAudioUnitRecorder];
     [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
+#else
+    if (self.audioSpeed == nil) {
+        self.audioSpeed = [[CMAudioSessionSpeed alloc]initAudioUnitSpeedWithSampleRate:CMAudioSpeedSampleRate_Defalut];
+        self.audioSpeed.delegate = self;
+    }
+    [self.audioSpeed start];
+    [self.audioSpeed startEchoAudio:0];
+//    [self.audioSpeed pitchEnable:1];
+#endif
+    
 }
 - (IBAction)stopAction:(id)sender {
     [self.audioPlayer cm_stop];
+    [self.audioSpeed stop];
     [self.audioSession cm_stopAudioUnitRecorder];
-//    [self.auidoHandle closeFile];
+//    self.audioSession.audioRate = CMAudioPCMSampleRate_44100Hz;
+//    [self.audioSession initAudioComponent];
+    [self.auidoHandle closeFile];
 }
-- (IBAction)closeAction:(id)sender {
-    [self.audioPlayer cm_close];
-    [self.audioSession cm_closeAudioUnitRecorder];
+- (IBAction)closeAction:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    if (sender.selected) {
+        [self.audioSpeed pitchEnable:1];
+    }else{
+        [self.audioSpeed pitchEnable:0];
+    }
+//    [self.audioPlayer cm_close];
+//    [self.audioSession cm_closeAudioUnitRecorder];
 //    [self.auidoHandle closeFile];
 //    self.audioSession = nil;
 //    self.audioPlayer = nil;
-    self.button.selected = NO;
+//    self.button.selected = NO;
 }
 
 - (void)createPCMFile{

@@ -21,6 +21,7 @@
 		6AA063BC280A743D00EF63A5 /* CMAudioSession_PCM.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA063BA280A743D00EF63A5 /* CMAudioSession_PCM.m */; };
 		6AAF4EBA2963216600EB8088 /* Auido_44100.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6AAF4EB82963216600EB8088 /* Auido_44100.pcm */; };
 		6AAF4EBB2963216600EB8088 /* Auido_8000.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6AAF4EB92963216600EB8088 /* Auido_8000.pcm */; };
+		6AB3F3182B32C18400EAC254 /* CMAudioSessionSpeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB3F3172B32C18400EAC254 /* CMAudioSessionSpeed.m */; };
 		6ACB3CD22B2A93330091094A /* InterpolateLinear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB42B2A93330091094A /* InterpolateLinear.cpp */; };
 		6ACB3CD32B2A93330091094A /* InterpolateCubic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB62B2A93330091094A /* InterpolateCubic.cpp */; };
 		6ACB3CD42B2A93330091094A /* AAFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB72B2A93330091094A /* AAFilter.cpp */; };
@@ -78,6 +79,8 @@
 		6AA063BB280A743D00EF63A5 /* CMAudioSession_PCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMAudioSession_PCM.h; sourceTree = "<group>"; };
 		6AAF4EB82963216600EB8088 /* Auido_44100.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = Auido_44100.pcm; sourceTree = "<group>"; };
 		6AAF4EB92963216600EB8088 /* Auido_8000.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = Auido_8000.pcm; sourceTree = "<group>"; };
+		6AB3F3162B32C18400EAC254 /* CMAudioSessionSpeed.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMAudioSessionSpeed.h; sourceTree = "<group>"; };
+		6AB3F3172B32C18400EAC254 /* CMAudioSessionSpeed.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMAudioSessionSpeed.m; sourceTree = "<group>"; };
 		6ACB3CB42B2A93330091094A /* InterpolateLinear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InterpolateLinear.cpp; sourceTree = "<group>"; };
 		6ACB3CB52B2A93330091094A /* TDStretch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDStretch.h; sourceTree = "<group>"; };
 		6ACB3CB62B2A93330091094A /* InterpolateCubic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InterpolateCubic.cpp; sourceTree = "<group>"; };
@@ -171,6 +174,8 @@
 				6AA063B7280A741E00EF63A5 /* CMAuidoPlayer_PCM.m */,
 				6AA063BB280A743D00EF63A5 /* CMAudioSession_PCM.h */,
 				6AA063BA280A743D00EF63A5 /* CMAudioSession_PCM.m */,
+				6AB3F3162B32C18400EAC254 /* CMAudioSessionSpeed.h */,
+				6AB3F3172B32C18400EAC254 /* CMAudioSessionSpeed.m */,
 				6AA0638B280A73F600EF63A5 /* Main.storyboard */,
 				6AA0638E280A73F900EF63A5 /* Assets.xcassets */,
 				6AA06390280A73F900EF63A5 /* LaunchScreen.storyboard */,
@@ -390,6 +395,7 @@
 				6ACB3CD32B2A93330091094A /* InterpolateCubic.cpp in Sources */,
 				6ACB3CD52B2A93330091094A /* sse_optimized.cpp in Sources */,
 				6ACB3CDE2B2A93330091094A /* BPMDetect.cpp in Sources */,
+				6AB3F3182B32C18400EAC254 /* CMAudioSessionSpeed.m in Sources */,
 				6ACB3CD62B2A93330091094A /* TDStretch.cpp in Sources */,
 				6ACB3CDB2B2A93330091094A /* mmx_optimized.cpp in Sources */,
 				6AA0638A280A73F600EF63A5 /* ViewController.mm in Sources */,

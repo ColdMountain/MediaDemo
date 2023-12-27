@@ -35,7 +35,7 @@ typedef enum {
 - (void)cm_startAudioUnitRecorder;
 - (void)cm_stopAudioUnitRecorder;
 - (void)cm_closeAudioUnitRecorder;
-
+- (void)initAudioComponent;
 
 @property (nonatomic, weak) id<CMAudioSessionPCMDelegate>delegate;
 @property (nonatomic, assign) CMAudioPCMSampleRate audioRate;
