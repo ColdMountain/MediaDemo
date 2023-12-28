@@ -32,6 +32,7 @@ typedef enum {
 - (instancetype)initAudioUnitWithSampleRate:(CMAudioPCMSampleRate)audioRate;
 - (void)setOutputAudioPort:(AVAudioSessionPortOverride)audioSessionPortOverride;
 - (void)cm_startEchoAudio:(int)echoStatus;
+- (void)cm_startAGC:(int)agcStatus;
 - (void)cm_startAudioUnitRecorder;
 - (void)cm_stopAudioUnitRecorder;
 - (void)cm_closeAudioUnitRecorder;

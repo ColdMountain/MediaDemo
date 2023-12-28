@@ -24,6 +24,7 @@
 
 @implementation CMAudioSessionSpeed
 
+#pragma mark - 音频采集
 
 static OSStatus CMRecordingCallback(void *inRefCon,
                                   AudioUnitRenderActionFlags *ioActionFlags,
@@ -60,6 +61,8 @@ static OSStatus CMRecordingCallback(void *inRefCon,
     return noErr;
 }
 
+#pragma mark - 音频播放
+
 static OSStatus CMRenderCallback(void *                      inRefCon,
                                   AudioUnitRenderActionFlags* ioActionFlags,
                                   const AudioTimeStamp*       inTimeStamp,
@@ -84,6 +87,8 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     return self;
 }
 
+#pragma mark - 设置AVAudioSession
+
 - (void)relocationAudio{
     // /Applications/VLC.app/Contents/MacOS/VLC --demux=rawaud --rawaud-channels 1 --rawaud-samplerate 8000
     NSError* error;
@@ -101,6 +106,8 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     
     success = [audioSession setActive:YES error:&error];
 }
+
+#pragma mark - 设置AUGraph链接Node
 
 - (void)createAUGraph{
     OSStatus status;
@@ -122,6 +129,8 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     AUGraphNodeInfo(graph, mixerNode, &mixerACD, &mixerUnit);
     AUGraphNodeInfo(graph, timePitchNode, &timePitchACD, &formatUnit);
 }
+
+#pragma mark - 设置AudioUnit
 
 - (void)setAudioUnit{
     int success = -1;
@@ -238,7 +247,8 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     }
 }
 
-//回音消除
+#pragma mark - 回音消除
+
 - (void)startEchoAudio:(int)echoStatus{
     OSStatus status;
     UInt32 echoCancellation;
@@ -267,6 +277,8 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     }
 }
 
+#pragma mark - 设置变声参数
+
 - (void)pitchEnable:(int)pitchEnable{
     OSStatus status;
     if (pitchEnable == 0) {
@@ -280,6 +292,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     //    AudioUnitSetParameter(mixerUnit, kMatrixMixerParam_Volume, kAudioUnitScope_Output, 0, 10, 0);
 }
 
+#pragma mark - 开启采集
 
 - (void)startAudioUnitRecorder;{
     int success = -1;
@@ -295,6 +308,8 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     }
 }
 
+#pragma mark - 停止采集
+
 - (void)stopAudioUnitRecorder;{
     OSStatus status = AUGraphStop(graph);
     if (status == noErr) {
@@ -304,6 +319,8 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
         NSLog(@"CMAudioSessionSpeed | AUGraphStop: %d", status);
     }
 }
+
+#pragma mark - 关闭采集
 
 - (void)closeAudioUnitRecorder{
     OSStatus status = AUGraphClose(graph);
@@ -320,6 +337,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     }
 }
 
+#pragma mark - 设置听筒/扬声器
 
 - (void)setOutputAudioPort:(AVAudioSessionPortOverride)audioSessionPortOverride{
     AVAudioSessionRouteDescription *currentRoute = [[AVAudioSession sharedInstance] currentRoute];

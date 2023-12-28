@@ -26,6 +26,73 @@
 
 
 @implementation CMAudioSession_PCM
+
+#pragma mark - 采集音频回调
+
+static OSStatus RecordingCallback(void *inRefCon,
+                                  AudioUnitRenderActionFlags *ioActionFlags,
+                                  const AudioTimeStamp *inTimeStamp,
+                                  UInt32 inBusNumber,
+                                  UInt32 inNumberFrames,
+                                  AudioBufferList *ioData) {
+    CMAudioSession_PCM *session = (__bridge CMAudioSession_PCM *)inRefCon;
+    OSStatus status = noErr;
+    
+    uint8_t  kAudioCaptureData[inNumberFrames*2];
+    int32_t  kAudioCaptureSize           = inNumberFrames * 2;
+    
+     if (inNumberFrames > 0) {
+         session->buffList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
+         session->buffList->mNumberBuffers = 1;
+         session->buffList->mBuffers[0].mNumberChannels = 1;
+         session->buffList->mBuffers[0].mDataByteSize = kAudioCaptureSize;
+         session->buffList->mBuffers[0].mData = kAudioCaptureData;
+#if 0
+         NSLog(@"inNumberFrames :%d inBusNumber %d", inNumberFrames, inBusNumber);
+#endif
+         
+         
+         status = AudioUnitRender(session->audioUnit,
+                                  ioActionFlags,
+                                  inTimeStamp,
+                                  inBusNumber,
+                                  inNumberFrames,
+                                  session->buffList);
+         if (status != noErr) {
+             NSLog(@"CMAudioSession_PCM | AudioUnitRender %d",status);
+         }
+         
+         NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
+                                    length:session->buffList->mBuffers[0].mDataByteSize];
+         //把回调返回的音频数据 copy到 另一个Buffer中保存
+         memcpy(session->recorderBuffer, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
+         
+         if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:selfClass:)]) {
+             char* speexByte = (char*)[pcmData bytes];
+             NSData *data = [NSData dataWithBytes:speexByte length:pcmData.length];
+             [session.delegate cm_audioUnitBackPCM:data selfClass:session];
+         }
+     } else {
+         NSLog(@"inNumberFrames is %u", (unsigned int)inNumberFrames);
+     }
+    
+    
+    return noErr;
+}
+
+#pragma mark - 播放音频回调
+
+static OSStatus CMRenderCallback(void *                      inRefCon,
+                                AudioUnitRenderActionFlags* ioActionFlags,
+                                const AudioTimeStamp*       inTimeStamp,
+                                UInt32                      inBusNumber,
+                                UInt32                      inNumberFrames,
+                                AudioBufferList*            __nullable ioData){
+    CMAudioSession_PCM * session = (__bridge CMAudioSession_PCM *)(inRefCon);
+    memcpy(ioData->mBuffers[0].mData, session->recorderBuffer, ioData->mBuffers[0].mDataByteSize);
+    return noErr;
+}
+
 - (instancetype)initAudioUnitWithSampleRate:(CMAudioPCMSampleRate)audioRate{
     self = [super init];
     if (self) {
@@ -39,6 +106,8 @@
     }
     return self;
 }
+
+#pragma mark - 设置AVAudioSession
 
 - (void)relocationAudio{
     // /Applications/VLC.app/Contents/MacOS/VLC --demux=rawaud --rawaud-channels 1 --rawaud-samplerate 8000
@@ -98,6 +167,8 @@
 #endif
 }
 
+#pragma mark - 设置扬声器/听筒
+
 - (void)setOutputAudioPort:(AVAudioSessionPortOverride)audioSessionPortOverride{
     AVAudioSessionRouteDescription *currentRoute = [[AVAudioSession sharedInstance] currentRoute];
     for (AVAudioSessionPortDescription *portDesc in [currentRoute outputs])
@@ -113,6 +184,8 @@
         }
     }
 }
+
+#pragma mark - 创建设置 AudioUnit
 
 - (void)initAudioComponent{
     // 描述音频元件
@@ -189,19 +262,6 @@
         NSLog(@"CMAudioSession_PCM | kAudioOutputUnitProperty_EnableIO error, %d", (int)status);
     }
         
-    //AGC 增益 依赖 kAudioUnitSubType_VoiceProcessingIO
-    UInt32 enable_agc = 1;
-    status = AudioUnitSetProperty(audioUnit,
-                                  kAUVoiceIOProperty_VoiceProcessingEnableAGC,
-                                  kAudioUnitScope_Global,
-                                  INPUT_BUS,
-                                  &enable_agc,
-                                  sizeof(enable_agc));
-    if (status != noErr) {
-        NSLog(@"CMAudioSession_PCM | Failed to enable the built-in AGC. " "Error=%d", (int)status);
-    }
-    
-    
     //设置数据采集回调函数
     AURenderCallbackStruct recordCallback;
     recordCallback.inputProc = RecordingCallback;
@@ -237,73 +297,8 @@
 #endif
 }
 
-#pragma mark - 采集音频回调
+#pragma mark - 回音消除
 
-static OSStatus RecordingCallback(void *inRefCon,
-                                  AudioUnitRenderActionFlags *ioActionFlags,
-                                  const AudioTimeStamp *inTimeStamp,
-                                  UInt32 inBusNumber,
-                                  UInt32 inNumberFrames,
-                                  AudioBufferList *ioData) {
-    CMAudioSession_PCM *session = (__bridge CMAudioSession_PCM *)inRefCon;
-    OSStatus status = noErr;
-    
-    uint8_t  kAudioCaptureData[inNumberFrames*2];
-    int32_t  kAudioCaptureSize           = inNumberFrames * 2;
-    
-     if (inNumberFrames > 0) {
-         session->buffList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
-         session->buffList->mNumberBuffers = 1;
-         session->buffList->mBuffers[0].mNumberChannels = 1;
-         session->buffList->mBuffers[0].mDataByteSize = kAudioCaptureSize;
-         session->buffList->mBuffers[0].mData = kAudioCaptureData;
-#if 0
-         NSLog(@"inNumberFrames :%d inBusNumber %d", inNumberFrames, inBusNumber);
-#endif
-         
-         
-         status = AudioUnitRender(session->audioUnit,
-                                  ioActionFlags,
-                                  inTimeStamp,
-                                  inBusNumber,
-                                  inNumberFrames,
-                                  session->buffList);
-         if (status != noErr) {
-             NSLog(@"CMAudioSession_PCM | AudioUnitRender %d",status);
-         }
-         
-         NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
-                                    length:session->buffList->mBuffers[0].mDataByteSize];
-         //把回调返回的音频数据 copy到 另一个Buffer中保存
-         memcpy(session->recorderBuffer, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
-         
-         if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:selfClass:)]) {
-             char* speexByte = (char*)[pcmData bytes];
-             NSData *data = [NSData dataWithBytes:speexByte length:pcmData.length];
-             [session.delegate cm_audioUnitBackPCM:data selfClass:session];
-         }
-     } else {
-         NSLog(@"inNumberFrames is %u", (unsigned int)inNumberFrames);
-     }
-    
-    
-    return noErr;
-}
-
-#pragma mark - 播放音频回调
-
-OSStatus  CMRenderCallback(void *                      inRefCon,
-                           AudioUnitRenderActionFlags* ioActionFlags,
-                           const AudioTimeStamp*       inTimeStamp,
-                           UInt32                      inBusNumber,
-                           UInt32                      inNumberFrames,
-                           AudioBufferList*            __nullable ioData){
-    CMAudioSession_PCM * session = (__bridge CMAudioSession_PCM *)(inRefCon);
-    memcpy(ioData->mBuffers[0].mData, session->recorderBuffer, ioData->mBuffers[0].mDataByteSize);
-    return noErr;
-}
-
-//回音消除
 - (void)cm_startEchoAudio:(int)echoStatus{
     OSStatus status;
     UInt32 echoCancellation;
@@ -332,8 +327,26 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
     }
 }
 
+#pragma mark - AGC 增益
 
-//开启AudioUnit
+- (void)cm_startAGC:(int)agcStatus{
+    //AGC 增益 依赖 kAudioUnitSubType_VoiceProcessingIO
+    OSStatus status;
+    UInt32 enable_agc = agcStatus;
+    status = AudioUnitSetProperty(audioUnit,
+                                  kAUVoiceIOProperty_VoiceProcessingEnableAGC,
+                                  kAudioUnitScope_Global,
+                                  INPUT_BUS,
+                                  &enable_agc,
+                                  sizeof(enable_agc));
+    if (status != noErr) {
+        NSLog(@"CMAudioSession_PCM | Failed to enable the built-in AGC. " "Error=%d", (int)status);
+    }
+}
+
+
+#pragma mark - 开始音频采样
+
 - (void)cm_startAudioUnitRecorder {
     OSStatus status;
     status = AudioUnitInitialize(audioUnit);
@@ -362,7 +375,8 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
     }
 }
 
-//关闭AudioUnit
+#pragma mark - 停止音频采样
+
 - (void)cm_stopAudioUnitRecorder{
     OSStatus status = AudioOutputUnitStop(audioUnit);
     if (status == noErr) {
@@ -372,6 +386,8 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
         NSLog(@"CMAudioSession_PCM | AudioOutputUnitStop: %p %d", audioUnit, status);
     }
 }
+
+#pragma mark - 关闭音频采样
 
 - (void)cm_closeAudioUnitRecorder{
     AudioUnitUninitialize(audioUnit);
@@ -389,6 +405,7 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
     }
 }
 
+#pragma mark - 音频采样信息
 
 - (void)printAudioStreamBasicDescription:(AudioStreamBasicDescription)asbd {
     char formatID[5];

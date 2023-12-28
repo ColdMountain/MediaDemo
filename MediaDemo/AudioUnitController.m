@@ -14,6 +14,7 @@
 @property (nonatomic, strong) NSFileHandle *handle;
 @property (weak, nonatomic) IBOutlet UIButton *echoButton;
 @property (weak, nonatomic) IBOutlet UIButton *speakerBtn;
+@property (weak, nonatomic) IBOutlet UIButton *agcBtn;
 @end
 
 @implementation AudioUnitController
@@ -27,6 +28,9 @@
     self.echoButton.selected = YES;
     [self.echoButton setBackgroundColor:[UIColor systemPurpleColor]];
     [self.echoButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
+    [self.agcBtn setTitleColor:[UIColor systemGrayColor] forState:UIControlStateNormal];
+    [self.agcBtn setTitleColor:[UIColor systemRedColor] forState:UIControlStateSelected];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -73,6 +77,7 @@
         [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
     }
 }
+
 - (IBAction)echoAction:(UIButton *)sender {
     sender.selected = !sender.selected;
     if (sender.selected) {
@@ -83,6 +88,14 @@
         [self.audioSession cm_startEchoAudio:1];
         [self.echoButton setBackgroundColor:[UIColor clearColor]];
         [self.echoButton setTitleColor:[UIColor systemPurpleColor] forState:UIControlStateNormal];
+    }
+}
+- (IBAction)agcEnableAction:(UIButton *)sender {
+    sender.selected = !sender.selected;
+    if (sender.selected) {
+        [self.audioSession cm_startAGC:1];
+    }else{
+        [self.audioSession cm_startAGC:0];
     }
 }
 
