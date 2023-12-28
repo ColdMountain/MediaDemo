@@ -17,6 +17,7 @@
 #import "CMAudioSessionSpeed.h"
 
 #import "AudioFileManager.h"
+#import "QCHUDView.h"
 
 #define LocalEnable 0
 #define AudioPlayerEnable 0

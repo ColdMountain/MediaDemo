@@ -41,6 +41,9 @@
 		6ACB3CDE2B2A93330091094A /* BPMDetect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CCD2B2A93330091094A /* BPMDetect.cpp */; };
 		6ACB3CDF2B2A93330091094A /* InterpolateShannon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CD02B2A93330091094A /* InterpolateShannon.cpp */; };
 		6AE21A292B3D1B220054A817 /* AudioFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A282B3D1B220054A817 /* AudioFileManager.m */; };
+		6AE21A342B3D69810054A817 /* QCHUDView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A2E2B3D69800054A817 /* QCHUDView.m */; };
+		6AE21A352B3D69810054A817 /* UIView+QCHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A2F2B3D69800054A817 /* UIView+QCHUD.m */; };
+		6AE21A362B3D69810054A817 /* QCHUDTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A332B3D69810054A817 /* QCHUDTool.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -124,6 +127,12 @@
 		6AE21A272B3D1B220054A817 /* AudioFileManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFileManager.h; sourceTree = "<group>"; };
 		6AE21A282B3D1B220054A817 /* AudioFileManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioFileManager.m; sourceTree = "<group>"; };
 		6AE21A2C2B3D4E330054A817 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		6AE21A2E2B3D69800054A817 /* QCHUDView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCHUDView.m; sourceTree = "<group>"; };
+		6AE21A2F2B3D69800054A817 /* UIView+QCHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+QCHUD.m"; sourceTree = "<group>"; };
+		6AE21A302B3D69800054A817 /* QCHUDTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCHUDTool.h; sourceTree = "<group>"; };
+		6AE21A312B3D69810054A817 /* QCHUDView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCHUDView.h; sourceTree = "<group>"; };
+		6AE21A322B3D69810054A817 /* UIView+QCHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+QCHUD.h"; sourceTree = "<group>"; };
+		6AE21A332B3D69810054A817 /* QCHUDTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCHUDTool.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +198,7 @@
 				6AAF2FDF2B3D05D500EC295A /* AudioUnitGraphController.xib */,
 				6AAF2FD62B3D054A00EC295A /* AuidoUnit */,
 				6AE21A262B3D1AF60054A817 /* FileManger */,
+				6AE21A2D2B3D69800054A817 /* QCHUD */,
 				6AAF2FD72B3D056500EC295A /* Source */,
 				6ACB3C6E2B295C770091094A /* SoundTouch */,
 				6AA0638B280A73F600EF63A5 /* Main.storyboard */,
@@ -298,6 +308,19 @@
 				6AE21A282B3D1B220054A817 /* AudioFileManager.m */,
 			);
 			path = FileManger;
+			sourceTree = "<group>";
+		};
+		6AE21A2D2B3D69800054A817 /* QCHUD */ = {
+			isa = PBXGroup;
+			children = (
+				6AE21A322B3D69810054A817 /* UIView+QCHUD.h */,
+				6AE21A2F2B3D69800054A817 /* UIView+QCHUD.m */,
+				6AE21A302B3D69800054A817 /* QCHUDTool.h */,
+				6AE21A332B3D69810054A817 /* QCHUDTool.m */,
+				6AE21A312B3D69810054A817 /* QCHUDView.h */,
+				6AE21A2E2B3D69800054A817 /* QCHUDView.m */,
+			);
+			path = QCHUD;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -444,6 +467,7 @@
 				6ACB3CD32B2A93330091094A /* InterpolateCubic.cpp in Sources */,
 				6ACB3CD52B2A93330091094A /* sse_optimized.cpp in Sources */,
 				6ACB3CDE2B2A93330091094A /* BPMDetect.cpp in Sources */,
+				6AE21A352B3D69810054A817 /* UIView+QCHUD.m in Sources */,
 				6AE21A292B3D1B220054A817 /* AudioFileManager.m in Sources */,
 				6AAF2FDB2B3D05A700EC295A /* AudioUnitController.m in Sources */,
 				6AB3F3182B32C18400EAC254 /* CMAudioSessionSpeed.m in Sources */,
@@ -452,12 +476,14 @@
 				6AA0638A280A73F600EF63A5 /* ViewController.m in Sources */,
 				6AA06384280A73F600EF63A5 /* AppDelegate.m in Sources */,
 				6AA06395280A73F900EF63A5 /* main.m in Sources */,
+				6AE21A362B3D69810054A817 /* QCHUDTool.m in Sources */,
 				6ACB3CD42B2A93330091094A /* AAFilter.cpp in Sources */,
 				6ACB3CD92B2A93330091094A /* FIFOSampleBuffer.cpp in Sources */,
 				6AA06387280A73F600EF63A5 /* SceneDelegate.m in Sources */,
 				6ACB3CD22B2A93330091094A /* InterpolateLinear.cpp in Sources */,
 				6AAF2FE02B3D05D500EC295A /* AudioUnitGraphController.m in Sources */,
 				6ACB3CDF2B2A93330091094A /* InterpolateShannon.cpp in Sources */,
+				6AE21A342B3D69810054A817 /* QCHUDView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

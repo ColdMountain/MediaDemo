@@ -294,9 +294,8 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 
 #pragma mark - 开启采集
 
-- (void)startAudioUnitRecorder;{
+- (int)startAudioUnitRecorder{
     int success = -1;
-    
     success = AUGraphInitialize(graph);
     if (noErr != success) {
         CheckStatus(success,@"CMAudioSessionSpeed | AUGraphInitialize is Failed", YES);
@@ -306,11 +305,12 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     if (noErr != success) {
         CheckStatus(success,@"CMAudioSessionSpeed | AUGraphStart is Failed", YES);
     }
+    return success;
 }
 
 #pragma mark - 停止采集
 
-- (void)stopAudioUnitRecorder;{
+- (int)stopAudioUnitRecorder{
     OSStatus status = AUGraphStop(graph);
     if (status == noErr) {
         NSLog(@"停止音频");
@@ -318,6 +318,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     }else{
         NSLog(@"CMAudioSessionSpeed | AUGraphStop: %d", status);
     }
+    return status;
 }
 
 #pragma mark - 关闭采集

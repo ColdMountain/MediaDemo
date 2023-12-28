@@ -347,7 +347,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 
 #pragma mark - 开始音频采样
 
-- (void)cm_startAudioUnitRecorder {
+- (int)cm_startAudioUnitRecorder {
     OSStatus status;
     status = AudioUnitInitialize(audioUnit);
     
@@ -373,11 +373,13 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
         NSLog(@"CMAudioSession_PCM | AudioUnitInitialize: %p %d", audioUnit, status);
         NSLog(@"CMAudioSession_PCM | AudioOutputUnitStart: %p %d", audioUnit, status);
     }
+    
+    return status;
 }
 
 #pragma mark - 停止音频采样
 
-- (void)cm_stopAudioUnitRecorder{
+- (int)cm_stopAudioUnitRecorder{
     OSStatus status = AudioOutputUnitStop(audioUnit);
     if (status == noErr) {
         NSLog(@"停止音频");
@@ -385,6 +387,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     }else{
         NSLog(@"CMAudioSession_PCM | AudioOutputUnitStop: %p %d", audioUnit, status);
     }
+    return status;
 }
 
 #pragma mark - 关闭音频采样

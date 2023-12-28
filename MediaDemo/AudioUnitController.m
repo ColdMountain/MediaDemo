@@ -12,6 +12,9 @@
 @property (nonatomic, strong) CMAuidoPlayer_PCM *audioPlayer;
 
 @property (nonatomic, strong) NSFileHandle *handle;
+@property (nonatomic, assign) int playState;
+
+@property (weak, nonatomic) IBOutlet UIButton *captureBtn;
 @property (weak, nonatomic) IBOutlet UIButton *echoButton;
 @property (weak, nonatomic) IBOutlet UIButton *speakerBtn;
 @property (weak, nonatomic) IBOutlet UIButton *agcBtn;
@@ -21,7 +24,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.playState = -1;
     [self.speakerBtn setTitle:@"听筒" forState:UIControlStateNormal];
     [self.speakerBtn setTitle:@"扬声器" forState:UIControlStateSelected];
     
@@ -50,19 +53,29 @@
         self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_Defalut];
     }
 #endif
+    int success = -1;
     if (self.audioSession == nil) {
         self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_Defalut];
         self.audioSession.delegate = self;
     }
-    [self.audioSession cm_startAudioUnitRecorder];
+    success = [self.audioSession cm_startAudioUnitRecorder];
     [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
+    if (success == noErr) {
+        self.playState = 1;
+        [self.captureBtn setTitle:@"采集中" forState:UIControlStateNormal];
+    }
 #if AudioPlayerEnable
     [self.audioPlayer cm_play];
 #endif
 }
 
 - (IBAction)stopCaptureAudio:(UIButton *)sender {
-    [self.audioSession cm_stopAudioUnitRecorder];
+    int success = -1;
+    success = [self.audioSession cm_stopAudioUnitRecorder];
+    if (success == noErr) {
+        self.playState = -1;
+        [self.captureBtn setTitle:@"采集" forState:UIControlStateNormal];
+    }
 }
 
 - (IBAction)closeCaptureAudio:(UIButton *)sender {
@@ -70,6 +83,10 @@
 }
 
 - (IBAction)earphoneSpeaker:(UIButton *)sender {
+    if (self.playState < 0) {
+        [QCHUDView showDpromptText:@"请开始采集音频"];
+        return;
+    }
     sender.selected = !sender.selected;
     if (sender.selected) {
         [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideNone];
@@ -79,6 +96,10 @@
 }
 
 - (IBAction)echoAction:(UIButton *)sender {
+    if (self.playState < 0) {
+        [QCHUDView showDpromptText:@"请开始采集音频"];
+        return;
+    }
     sender.selected = !sender.selected;
     if (sender.selected) {
         [self.audioSession cm_startEchoAudio:0];
@@ -91,6 +112,10 @@
     }
 }
 - (IBAction)agcEnableAction:(UIButton *)sender {
+    if (self.playState < 0) {
+        [QCHUDView showDpromptText:@"请开始采集音频"];
+        return;
+    }
     sender.selected = !sender.selected;
     if (sender.selected) {
         [self.audioSession cm_startAGC:1];

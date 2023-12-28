@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AudioUnitController">
             <connections>
                 <outlet property="agcBtn" destination="NjT-3E-9hT" id="pxH-gp-iGf"/>
+                <outlet property="captureBtn" destination="S9w-oM-nMz" id="AUo-AT-4dd"/>
                 <outlet property="echoButton" destination="4Sg-na-3qy" id="cSK-7X-U80"/>
                 <outlet property="speakerBtn" destination="lyN-6o-pnT" id="LiI-fT-7IR"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
