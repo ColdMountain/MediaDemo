@@ -12,13 +12,15 @@
 @interface CMAuidoPlayer_PCM()
 {
     AudioUnit _outAudioUinit;
-    AudioBufferList *_renderBufferList;
+    AudioBufferList *renderBufferList;
     AudioFileStreamID _audioFileStreamID;
     AudioConverterRef _converter;
     AudioStreamBasicDescription _streamDescription;
     NSInteger _readedPacketIndex;
     UInt32 _renderBufferSize;
     NSInputStream *inputStream;
+    
+    Byte *recorderBuffer;
 }
 @property (nonatomic, strong) NSMutableArray<NSData*> *paketsArray;
 @end
@@ -44,27 +46,8 @@ static AudioStreamBasicDescription PCMStreamDescription(void*inData)
 - (instancetype)initWithAudioUnitPlayerSampleRate:(CMAudioPlayerSampleRate)sampleRate{
     if (self = [super init]) {
         self.audioRate = sampleRate;
-#if 0
-        _renderBufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
-        _renderBufferList->mBuffers[0].mNumberChannels = 1;
-        _renderBufferList->mBuffers[0].mDataByteSize = 2048*2*10;
-        _renderBufferList->mBuffers[0].mData = malloc(2048*2*10);
-#endif
-        _readedPacketIndex = 0;
-        _paketsArray = [NSMutableArray arrayWithCapacity:0];
+        recorderBuffer = malloc(100*1024*1024);
         [self setupOutAudioUnit];
-        
-#if 0
-        NSString *paths = [[NSBundle mainBundle] pathForResource:@"Auido_8000" ofType:@"pcm"];
-        NSData *localData = [[NSData alloc] initWithContentsOfFile:paths];
-        
-        inputStream = [NSInputStream inputStreamWithData:localData];
-        
-        [inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        [inputStream open];
-        
-        [self cm_play];
-#endif
     }
     return self;
 }
@@ -125,57 +108,24 @@ OSStatus  CMAURenderCallback(void *                      inRefCon,
                              UInt32                      inNumberFrames,
                              AudioBufferList*            __nullable ioData){
     CMAuidoPlayer_PCM * self = (__bridge CMAuidoPlayer_PCM *)(inRefCon);
-    
-#if 0
-//    ioData->mBuffers[0].mDataByteSize = self->_renderBufferList->mBuffers[0].mDataByteSize;
-//    ioData->mBuffers[0].mData = self->_renderBufferList->mBuffers[0].mData;
-    
-    ioData->mBuffers[0].mDataByteSize = (UInt32)[self->inputStream read:ioData->mBuffers[0].mData maxLength:(NSInteger)ioData->mBuffers[0].mDataByteSize];
-    if (ioData->mBuffers[0].mDataByteSize <= 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self cm_stop];
-            });
-        }
-    
-#else
-    @synchronized (self) {
-//        if (self->_paketsArray.count >= self->_readedPacketIndex) {
-            @autoreleasepool {
-                NSData *packet = self->_paketsArray[self->_readedPacketIndex];
-                ioData->mBuffers[0].mDataByteSize = (UInt32)packet.length;
-                ioData->mBuffers[0].mData = (char*)packet.bytes;
-                self->_readedPacketIndex++;
-//                NSLog(@"当时数据个数:%ld=====渲染数据个数:%ld",self->_paketsArray.count, self->_readedPacketIndex);
-//                NSLog(@"out size: %u", (unsigned int)ioData->mBuffers[0].mDataByteSize);
-//                NSLog(@"out data: %s", ioData->mBuffers[0].mData);
-            }
-//        }
-        if (ioData->mBuffers[0].mDataByteSize <= 0) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self cm_stop];
-            });
-        }
-        
-    }
-#endif
-    
+    memcpy(ioData->mBuffers[0].mData, self->recorderBuffer, ioData->mBuffers[0].mDataByteSize);
+
     return noErr;
 }
 
 #pragma mark - 传入数据
 
 - (void)cm_playAudioWithData:(char*)pBuf andLength:(ssize_t)length{
-#if 1
+#if 0
     NSData *pcmData = [NSData dataWithBytes:pBuf length:length];
     [self.paketsArray addObject:pcmData];
 #else
-    AudioBuffer buffer;
-    buffer.mData = pBuf;
-    buffer.mDataByteSize = (UInt32)length;
-    buffer.mNumberChannels = 1;
-
-    _renderBufferList->mNumberBuffers = 1;
-    _renderBufferList->mBuffers[0] = buffer;
+    self->renderBufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
+    self->renderBufferList->mNumberBuffers = 1;
+    self->renderBufferList->mBuffers[0].mNumberChannels = 1;
+    self->renderBufferList->mBuffers[0].mDataByteSize = (UInt32)length;
+    self->renderBufferList->mBuffers[0].mData = pBuf;
+    memcpy(self->recorderBuffer, self->renderBufferList->mBuffers[0].mData, self->renderBufferList->mBuffers[0].mDataByteSize);
 #endif
     [self cm_play];
 }
@@ -188,8 +138,6 @@ OSStatus  CMAURenderCallback(void *                      inRefCon,
 - (void)cm_stop{
     OSStatus status = AudioOutputUnitStop(_outAudioUinit);
     assert(status == noErr);
-    [self.paketsArray removeAllObjects];
-    self->_readedPacketIndex = 0;
     if (status == noErr) {
         NSLog(@"停止播放器");
     }

@@ -6,7 +6,6 @@
 //
 
 #import "CMAudioSession_PCM.h"
-//#include "SoundTouch.h"
 
 #define INPUT_BUS 1
 #define OUTPUT_BUS 0
@@ -37,16 +36,6 @@
         self.audioRate = audioRate;
         [self relocationAudio];
         [self initAudioComponent];
-        
-//        mSoundTouch.setSampleRate(8000); //采样率
-//        mSoundTouch.setChannels(1);       //设置声音的声道
-//        mSoundTouch.setTempoChange(0);//这个就是传说中的变速不变调
-//        mSoundTouch.setPitchSemiTones(11);//设置声音的pitch (集音高变化semi-tones相比原来的音调)
-//        mSoundTouch.setRateChange(0);//设置声音的速率
-//        
-//        mSoundTouch.setSetting(SETTING_SEQUENCE_MS, 40);
-//        mSoundTouch.setSetting(SETTING_SEEKWINDOW_MS, 15); //寻找帧长
-//        mSoundTouch.setSetting(SETTING_OVERLAP_MS, 6);  //重叠帧长
     }
     return self;
 }
@@ -138,22 +127,10 @@
     AudioComponent inputComponent = AudioComponentFindNext(NULL, &desc);
     // 获得 Audio Unit
     status = AudioComponentInstanceNew(inputComponent, &audioUnit);
-    
-    
-//    AudioComponentDescription varispeedDesc;
-//    varispeedDesc.componentType = kAudioUnitType_FormatConverter;
-//    varispeedDesc.componentSubType = kAudioUnitSubType_Varispeed;
-//    varispeedDesc.componentManufacturer = kAudioUnitManufacturer_Apple;
-//    varispeedDesc.componentFlags = 0;
-//    varispeedDesc.componentFlagsMask = 0;
-//    
-//    AudioComponent inputComponent1 = AudioComponentFindNext(NULL, &varispeedDesc);
-//    // 获得 Audio Unit
-//    status = AudioComponentInstanceNew(inputComponent1, &audioUnit);
-    
+
     
     if (status != noErr) {
-        NSLog(@"1、AudioUnitGetProperty error, ret: %d", (int)status);
+        NSLog(@"CMAudioSession_PCM | AudioComponentFindNext error, ret: %d", (int)status);
     }
     
     AudioStreamBasicDescription inputFormat;
@@ -176,7 +153,7 @@
                                   &inputFormat,
                                   sizeof(inputFormat));
     if (status != noErr) {
-        NSLog(@"2、AudioUnitGetProperty error, ret: %d", (int)status);
+        NSLog(@"CMAudioSession_PCM | kAudioUnitScope_Output error, %d", (int)status);
     }
     //播放输出
     status = AudioUnitSetProperty(audioUnit,
@@ -186,10 +163,9 @@
                                   &inputFormat,
                                   sizeof(inputFormat));
     if (status != noErr) {
-        NSLog(@"3、AudioUnitGetProperty error, ret: %d", (int)status);
+        NSLog(@"CMAudioSession_PCM | kAudioUnitScope_Input error, %d", (int)status);
     }
     
-//    AudioStreamBasicDescription outputFormat = inputFormat;
     
     UInt32 flag = 1;
     status = AudioUnitSetProperty(audioUnit,
@@ -200,7 +176,7 @@
                                   sizeof(flag));
 
      if (status != noErr) {
-         NSLog(@"4、AudioUnitGetProperty error, ret: %d", (int)status);
+         NSLog(@"CMAudioSession_PCM | kAudioOutputUnitProperty_EnableIO error, %d", (int)status);
      }
     
     status = AudioUnitSetProperty(audioUnit,
@@ -210,7 +186,7 @@
                                   &flag,
                                   sizeof(flag));
     if (status != noErr) {
-        NSLog(@"5、AudioUnitGetProperty error, ret: %d", (int)status);
+        NSLog(@"CMAudioSession_PCM | kAudioOutputUnitProperty_EnableIO error, %d", (int)status);
     }
         
     //AGC 增益 依赖 kAudioUnitSubType_VoiceProcessingIO
@@ -222,7 +198,7 @@
                                   &enable_agc,
                                   sizeof(enable_agc));
     if (status != noErr) {
-        NSLog(@"Failed to enable the built-in AGC. " "Error=%d", (int)status);
+        NSLog(@"CMAudioSession_PCM | Failed to enable the built-in AGC. " "Error=%d", (int)status);
     }
     
     
@@ -237,9 +213,10 @@
                                   &recordCallback,
                                   sizeof(recordCallback));
     if (status != noErr) {
-        NSLog(@"6、AudioUnitGetProperty error, ret: %d", (int)status);
+        NSLog(@"CMAudioSession_PCM | kAudioOutputUnitProperty_SetInputCallback error, %d", (int)status);
     }
-
+    
+#if 1
     //设置数据播放回调
     AURenderCallbackStruct callBackStruct;
     callBackStruct.inputProc       = CMRenderCallback;
@@ -252,11 +229,12 @@
                                   sizeof(callBackStruct));
 
     if (status != noErr) {
-        NSLog(@"7、AudioUnitGetProperty error, ret: %d", (int)status);
+        NSLog(@"CMAudioSession_PCM | kAudioUnitProperty_SetRenderCallback error, %d", (int)status);
     }
     NSLog(@"AudioUnitInitialize: %p", audioUnit);
     OSStatus result = AudioUnitInitialize(audioUnit);
-    NSLog(@"result %d", (int)result);
+    NSLog(@"CMAudioSession_PCM | AudioUnitInitialize result %d", (int)result);
+#endif
 }
 
 #pragma mark - 采集音频回调
@@ -269,10 +247,8 @@ static OSStatus RecordingCallback(void *inRefCon,
                                   AudioBufferList *ioData) {
     CMAudioSession_PCM *session = (__bridge CMAudioSession_PCM *)inRefCon;
     OSStatus status = noErr;
-    UInt16 numSamples = inNumberFrames*1;
     
-    uint8_t  kAudioCaptureData[inNumberFrames*2];//numSamples * sizeof(UInt16)
-//    uint8_t  kAudioCaptureData[numSamples * sizeof(UInt32)];
+    uint8_t  kAudioCaptureData[inNumberFrames*2];
     int32_t  kAudioCaptureSize           = inNumberFrames * 2;
     
      if (inNumberFrames > 0) {
@@ -281,9 +257,6 @@ static OSStatus RecordingCallback(void *inRefCon,
          session->buffList->mBuffers[0].mNumberChannels = 1;
          session->buffList->mBuffers[0].mDataByteSize = kAudioCaptureSize;
          session->buffList->mBuffers[0].mData = kAudioCaptureData;
-         
-//         NSLog(@"mData %lu", numSamples * sizeof(UInt16));
-//         NSLog(@"size = %d", kAudioCaptureSize);
 #if 0
          NSLog(@"inNumberFrames :%d inBusNumber %d", inNumberFrames, inBusNumber);
 #endif
@@ -296,7 +269,7 @@ static OSStatus RecordingCallback(void *inRefCon,
                                   inNumberFrames,
                                   session->buffList);
          if (status != noErr) {
-             NSLog(@"AudioUnitRender error: %d",status);
+             NSLog(@"CMAudioSession_PCM | AudioUnitRender %d",status);
          }
          
          NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
@@ -342,7 +315,7 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
                                   &echoCancellation,
                                   &size);
     if (status != noErr){
-        NSLog(@"kAUVoiceIOProperty_BypassVoiceProcessing failed %d", (int)status);
+        NSLog(@"CMAudioSession_PCM | kAUVoiceIOProperty_BypassVoiceProcessing failed %d", (int)status);
     }
     
     if (echoStatus == echoCancellation){
@@ -355,7 +328,7 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
                                   &echoStatus,
                                   sizeof(echoStatus));
     if (status != noErr){
-        NSLog(@"kAUVoiceIOProperty_BypassVoiceProcessing failed %d", (int)status);
+        NSLog(@"CMAudioSession_PCM | kAUVoiceIOProperty_BypassVoiceProcessing failed %d", (int)status);
     }
 }
 
@@ -404,7 +377,7 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
     AudioUnitUninitialize(audioUnit);
     if (buffList != NULL) {
         if (buffList->mBuffers[0].mData) {
-            free(buffList->mBuffers[0].mData);
+//            free(buffList->mBuffers[0].mData);
             buffList->mBuffers[0].mData = NULL;
         }
         free(buffList);
@@ -412,7 +385,7 @@ OSStatus  CMRenderCallback(void *                      inRefCon,
     }
     OSStatus status = AudioComponentInstanceDispose(audioUnit);
     if (status == noErr) {
-        NSLog(@"关闭音频");
+        NSLog(@"CMAudioSession_PCM | 关闭音频采集");
     }
 }
 

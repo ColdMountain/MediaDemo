@@ -1,0 +1,29 @@
+//
+//  PrefixHeader.pch
+//  MediaDemo
+//
+//  Created by Cold Mountain on 2023/12/28.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#ifdef __OBJC__
+#import "AudioUnitController.h"
+#import "AudioUnitGraphController.h"
+
+#import "CMAuidoPlayer_PCM.h"
+#import "CMAudioSession_PCM.h"
+#import "CMAudioSessionSpeed.h"
+
+#import "AudioFileManager.h"
+
+#define LocalEnable 0
+#define AudioPlayerEnable 0
+
+#endif
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif /* PrefixHeader_pch */

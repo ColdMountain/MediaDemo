@@ -28,8 +28,9 @@ typedef enum {
 @interface CMAudioSessionSpeed : NSObject
 - (instancetype)initAudioUnitSpeedWithSampleRate:(CMAudioSpeedSampleRate)audioRate;
 - (void)setOutputAudioPort:(AVAudioSessionPortOverride)audioSessionPortOverride;
-- (void)start;
-- (void)stop;
+- (void)startAudioUnitRecorder;
+- (void)stopAudioUnitRecorder;
+- (void)closeAudioUnitRecorder;
 - (void)startEchoAudio:(int)echoStatus;
 - (void)pitchEnable:(int)pitchEnable;
 @property (nonatomic, assign) id<CMAudioSessionSpeedDelegate>delegate;

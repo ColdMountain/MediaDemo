@@ -50,11 +50,11 @@ static OSStatus CMRecordingCallback(void *inRefCon,
     if (status != noErr) {
         NSLog(@"CMAudioSessionSpeed | AudioUnitRender error: %d",status);
     }
-//    if ([session.delegate respondsToSelector:@selector(audioUnitBackPCM:)]) {
-//        NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
-//                                   length:session->buffList->mBuffers[0].mDataByteSize];
-//        [session.delegate audioUnitBackPCM:pcmData];
-//    }
+    if ([session.delegate respondsToSelector:@selector(audioUnitBackPCM:)]) {
+        NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
+                                   length:session->buffList->mBuffers[0].mDataByteSize];
+        [session.delegate audioUnitBackPCM:pcmData];
+    }
     memcpy(session->recorderBuffer, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
     
     return noErr;
@@ -68,7 +68,6 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
                                   AudioBufferList*            __nullable ioData){
     CMAudioSessionSpeed * session = (__bridge CMAudioSessionSpeed *)(inRefCon);
     memcpy(ioData->mBuffers[0].mData, session->recorderBuffer, ioData->mBuffers[0].mDataByteSize);
-//    NSLog(@"Callback | 输出大小 %u",ioData->mBuffers[0].mDataByteSize);
     return noErr;
 }
 
@@ -273,18 +272,16 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     if (pitchEnable == 0) {
         status = AudioUnitSetParameter(formatUnit, kNewTimePitchParam_Pitch, kAudioUnitScope_Global, 0, 0.0, 0);
     }else{
-        status = AudioUnitSetParameter(formatUnit, kNewTimePitchParam_Pitch, kAudioUnitScope_Global, 0, (Float32)1200.0, 0);
+        status = AudioUnitSetParameter(formatUnit, kNewTimePitchParam_Pitch, kAudioUnitScope_Global, 0, (Float32)1000.0, 0);
     }
 //    status = AudioUnitSetParameter(formatUnit, kNewTimePitchParam_Rate, kAudioUnitScope_Global, 0, (Float32)20.0, 0);
 //    status = AudioUnitSetParameter(formatUnit, kVarispeedParam_PlaybackRate, kAudioUnitScope_Global, 0, 2.5, 0);
 //    status = AudioUnitSetParameter(formatUnit, kVarispeedParam_PlaybackCents, kAudioUnitScope_Global, 0, (Float32)-200, 0);
-    
-    
-    AudioUnitSetParameter(mixerUnit, kMatrixMixerParam_Volume, kAudioUnitScope_Output, 0, 10, 0);
+    //    AudioUnitSetParameter(mixerUnit, kMatrixMixerParam_Volume, kAudioUnitScope_Output, 0, 10, 0);
 }
 
 
-- (void)start{
+- (void)startAudioUnitRecorder;{
     int success = -1;
     
     success = AUGraphInitialize(graph);
@@ -298,7 +295,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     }
 }
 
-- (void)stop{
+- (void)stopAudioUnitRecorder;{
     OSStatus status = AUGraphStop(graph);
     if (status == noErr) {
         NSLog(@"停止音频");
@@ -307,6 +304,22 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
         NSLog(@"CMAudioSessionSpeed | AUGraphStop: %d", status);
     }
 }
+
+- (void)closeAudioUnitRecorder{
+    OSStatus status = AUGraphClose(graph);
+    if (buffList != NULL) {
+        if (buffList->mBuffers[0].mData) {
+//            free(buffList->mBuffers[0].mData);
+            buffList->mBuffers[0].mData = NULL;
+        }
+        free(buffList);
+        buffList = NULL;
+    }
+    if (status == noErr) {
+        NSLog(@"CMAudioSessionSpeed | 关闭音频采集");
+    }
+}
+
 
 - (void)setOutputAudioPort:(AVAudioSessionPortOverride)audioSessionPortOverride{
     AVAudioSessionRouteDescription *currentRoute = [[AVAudioSession sharedInstance] currentRoute];
