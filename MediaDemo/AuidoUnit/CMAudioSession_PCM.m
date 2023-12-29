@@ -66,12 +66,13 @@ static OSStatus RecordingCallback(void *inRefCon,
                                     length:session->buffList->mBuffers[0].mDataByteSize];
          //把回调返回的音频数据 copy到 另一个Buffer中保存
          memcpy(session->recorderBuffer, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
-         
+//         NSLog(@"mDataByteSize %d", session->buffList->mBuffers[0].mDataByteSize);
          if ([session.delegate respondsToSelector:@selector(cm_audioUnitBackPCM:selfClass:)]) {
              char* speexByte = (char*)[pcmData bytes];
              NSData *data = [NSData dataWithBytes:speexByte length:pcmData.length];
              [session.delegate cm_audioUnitBackPCM:data selfClass:session];
          }
+         
      } else {
          NSLog(@"inNumberFrames is %u", (unsigned int)inNumberFrames);
      }

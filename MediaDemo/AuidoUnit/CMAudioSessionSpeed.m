@@ -56,6 +56,7 @@ static OSStatus CMRecordingCallback(void *inRefCon,
                                    length:session->buffList->mBuffers[0].mDataByteSize];
         [session.delegate audioUnitBackPCM:pcmData];
     }
+//    NSLog(@"mDataByteSize %d", session->buffList->mBuffers[0].mDataByteSize);
     memcpy(session->recorderBuffer, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
     
     return noErr;
@@ -212,7 +213,14 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
         return;
     }
     
-    
+    //将音频单元设置为每片处理最多4096帧 不设置Air Pods 采集音频会报错 kAudioUnitErr_TooManyFramesToProcess
+    UInt32 value = 4096;
+    UInt32 size = sizeof(value);
+    AudioUnitScope scope = kAudioUnitScope_Global;
+    AudioUnitPropertyID param = kAudioUnitProperty_MaximumFramesPerSlice;
+    AudioUnitSetProperty(mixerUnit, param, scope, 0, &value, size);
+    AudioUnitSetProperty(formatUnit, param, scope, 0, &value, size);
+    AudioUnitSetProperty(IOUnit, param, scope, 0, &value, size);
     
     //设置数据采集回调函数
     AURenderCallbackStruct recordCallback;
