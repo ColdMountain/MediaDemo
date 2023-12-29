@@ -289,7 +289,12 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 //    status = AudioUnitSetParameter(formatUnit, kNewTimePitchParam_Rate, kAudioUnitScope_Global, 0, (Float32)20.0, 0);
 //    status = AudioUnitSetParameter(formatUnit, kVarispeedParam_PlaybackRate, kAudioUnitScope_Global, 0, 2.5, 0);
 //    status = AudioUnitSetParameter(formatUnit, kVarispeedParam_PlaybackCents, kAudioUnitScope_Global, 0, (Float32)-200, 0);
-    //    AudioUnitSetParameter(mixerUnit, kMatrixMixerParam_Volume, kAudioUnitScope_Output, 0, 10, 0);
+}
+
+#pragma mark - 设置输出音量大小
+
+- (void)mixerVolume:(int)volume{
+    AudioUnitSetParameter(mixerUnit, kMatrixMixerParam_Volume, kAudioUnitScope_Output, 0, volume, 0);
 }
 
 #pragma mark - 开启采集

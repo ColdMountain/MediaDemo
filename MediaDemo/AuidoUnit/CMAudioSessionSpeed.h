@@ -33,6 +33,7 @@ typedef enum {
 - (void)closeAudioUnitRecorder;
 - (void)startEchoAudio:(int)echoStatus;
 - (void)pitchEnable:(int)pitchEnable;
+- (void)mixerVolume:(int)volume;
 @property (nonatomic, assign) id<CMAudioSessionSpeedDelegate>delegate;
 @property (nonatomic, assign) CMAudioSpeedSampleRate audioRate;
 @end

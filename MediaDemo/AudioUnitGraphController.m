@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) NSFileHandle *handle;
 @property (nonatomic, assign) int playState;
+@property (nonatomic, assign) int volumeNum;
 
 @property (weak, nonatomic) IBOutlet UIButton *captureBtn;
 @property (weak, nonatomic) IBOutlet UIButton *echoButton;
@@ -25,6 +26,7 @@
     [super viewDidLoad];
     
     self.playState = -1;
+    self.volumeNum = 0;
     
     [self.speakerBtn setTitle:@"听筒" forState:UIControlStateNormal];
     [self.speakerBtn setTitle:@"扬声器" forState:UIControlStateSelected];
@@ -44,6 +46,8 @@
     [self.audioSession closeAudioUnitRecorder];
 }
 
+#pragma mark - 开启
+
 - (IBAction)captureAudio:(UIButton *)sender {
     int success = -1;
     if (self.audioSession == nil) {
@@ -58,6 +62,8 @@
     }
 }
 
+#pragma mark - 停止
+
 - (IBAction)stopCaptureAudio:(UIButton *)sender {
     int success = -1;
     success = [self.audioSession stopAudioUnitRecorder];
@@ -67,9 +73,13 @@
     }
 }
 
+#pragma mark - 关闭
+
 - (IBAction)closeCaptureAudio:(UIButton *)sender {
     [self.audioSession closeAudioUnitRecorder];
 }
+
+#pragma mark - 扬声器/麦克风
 
 - (IBAction)earphoneSpeaker:(UIButton *)sender {
     if (self.playState < 0) {
@@ -83,6 +93,8 @@
         [self.audioSession setOutputAudioPort:AVAudioSessionPortOverrideSpeaker];
     }
 }
+
+#pragma mark - 回音消除
 
 - (IBAction)echoAction:(UIButton *)sender {
     if (self.playState < 0) {
@@ -101,6 +113,8 @@
     }
 }
 
+#pragma mark - 变声
+
 - (IBAction)soundTouch:(UIButton *)sender {
     if (self.playState < 0) {
         [QCHUDView showDpromptText:@"请开始采集音频"];
@@ -113,6 +127,24 @@
         [self.audioSession pitchEnable:0];
     }
 }
+
+#pragma mark - 输出音量大小
+
+- (IBAction)setVolume:(UIButton *)sender {
+    if (self.volumeNum < 0) {
+        return;
+    }
+    if (sender.tag == 0) {
+        self.volumeNum += 1;
+        [self.audioSession mixerVolume:self.volumeNum];
+    }else if (sender.tag == 1){
+        self.volumeNum -= 1;
+        [self.audioSession mixerVolume:self.volumeNum];
+    }
+    NSLog(@"输入音量大小: %d",self.volumeNum);
+}
+
+#pragma mark - 音频采集回调
 
 - (void)audioUnitBackPCM:(NSData*)audioData{
 #if 0

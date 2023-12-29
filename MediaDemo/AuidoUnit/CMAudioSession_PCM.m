@@ -344,6 +344,15 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     }
 }
 
+#pragma mark - 设置输出音量大小
+
+- (void)cm_mixerVolume:(int)volume{
+//    OSStatus status;
+//    status = AudioUnitSetParameter(audioUnit, kHALOutputParam_Volume, kAudioUnitScope_Output, 0, volume, 0);
+//    if (status != noErr) {
+//        NSLog(@"CMAudioSession_PCM |kHALOutputParam_Volume Error=%d ", (int)status);
+//    }
+}
 
 #pragma mark - 开始音频采样
 
