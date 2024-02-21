@@ -14,7 +14,7 @@
 
 #import "CMAuidoPlayer_PCM.h"
 #import "CMAudioSession_PCM.h"
-#import "CMAudioSessionSpeed.h"
+#import "CMAudioSessionMixer.h"
 
 #import "AudioFileManager.h"
 #import "QCHUDView.h"

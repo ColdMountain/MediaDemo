@@ -7,8 +7,8 @@
 
 #import "AudioUnitGraphController.h"
 
-@interface AudioUnitGraphController ()<CMAudioSessionSpeedDelegate>
-@property (nonatomic, strong) CMAudioSessionSpeed *audioSession;
+@interface AudioUnitGraphController ()<CMAudioSessionMixerDelegate>
+@property (nonatomic, strong) CMAudioSessionMixer *audioSession;
 
 @property (nonatomic, strong) NSFileHandle *handle;
 @property (nonatomic, assign) int playState;
@@ -51,7 +51,7 @@
 - (IBAction)captureAudio:(UIButton *)sender {
     int success = -1;
     if (self.audioSession == nil) {
-        self.audioSession = [[CMAudioSessionSpeed alloc]initAudioUnitSpeedWithSampleRate:CMAudioSpeedSampleRate_Defalut];
+        self.audioSession = [[CMAudioSessionMixer alloc]initAudioUnitMixerWithSampleRate:CMAudioMixerSampleRate_44100Hz];
         self.audioSession.delegate = self;
     }
     success = [self.audioSession startAudioUnitRecorder];

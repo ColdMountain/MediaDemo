@@ -6,8 +6,8 @@
 //
 
 #import "ViewController.h"
-
-@interface ViewController ()<CMAudioSessionPCMDelegate, CMAudioSessionSpeedDelegate, NSStreamDelegate>
+#import "TestViewController.h"
+@interface ViewController ()<NSStreamDelegate>
 {
 //    soundtouch::SoundTouch mSoundTouch; //变声器对象
 }
@@ -66,7 +66,9 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 - (IBAction)stopAction:(id)sender {
-    AudioUnitGraphController *vc = [[AudioUnitGraphController alloc]init];
+//    AudioUnitGraphController *vc = [[AudioUnitGraphController alloc]init];
+//    [self.navigationController pushViewController:vc animated:YES];
+    TestViewController *vc = [[TestViewController alloc]init];
     [self.navigationController pushViewController:vc animated:YES];
 }
 

@@ -25,7 +25,7 @@
 		6AAF2FE12B3D05D500EC295A /* AudioUnitGraphController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AAF2FDF2B3D05D500EC295A /* AudioUnitGraphController.xib */; };
 		6AAF4EBA2963216600EB8088 /* Auido_44100.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6AAF4EB82963216600EB8088 /* Auido_44100.pcm */; };
 		6AAF4EBB2963216600EB8088 /* Auido_8000.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6AAF4EB92963216600EB8088 /* Auido_8000.pcm */; };
-		6AB3F3182B32C18400EAC254 /* CMAudioSessionSpeed.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB3F3172B32C18400EAC254 /* CMAudioSessionSpeed.m */; };
+		6AB3F3182B32C18400EAC254 /* CMAudioSessionMixer.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AB3F3172B32C18400EAC254 /* CMAudioSessionMixer.m */; };
 		6ACB3CD22B2A93330091094A /* InterpolateLinear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB42B2A93330091094A /* InterpolateLinear.cpp */; };
 		6ACB3CD32B2A93330091094A /* InterpolateCubic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB62B2A93330091094A /* InterpolateCubic.cpp */; };
 		6ACB3CD42B2A93330091094A /* AAFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CB72B2A93330091094A /* AAFilter.cpp */; };
@@ -40,6 +40,8 @@
 		6ACB3CDD2B2A93330091094A /* SoundTouch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CCC2B2A93330091094A /* SoundTouch.cpp */; };
 		6ACB3CDE2B2A93330091094A /* BPMDetect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CCD2B2A93330091094A /* BPMDetect.cpp */; };
 		6ACB3CDF2B2A93330091094A /* InterpolateShannon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ACB3CD02B2A93330091094A /* InterpolateShannon.cpp */; };
+		6AD135862B858E6000EB8C02 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AD135842B858E6000EB8C02 /* TestViewController.m */; };
+		6AD135872B858E6000EB8C02 /* TestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6AD135852B858E6000EB8C02 /* TestViewController.xib */; };
 		6AE21A292B3D1B220054A817 /* AudioFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A282B3D1B220054A817 /* AudioFileManager.m */; };
 		6AE21A342B3D69810054A817 /* QCHUDView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A2E2B3D69800054A817 /* QCHUDView.m */; };
 		6AE21A352B3D69810054A817 /* UIView+QCHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A2F2B3D69800054A817 /* UIView+QCHUD.m */; };
@@ -93,8 +95,8 @@
 		6AAF2FDF2B3D05D500EC295A /* AudioUnitGraphController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AudioUnitGraphController.xib; sourceTree = "<group>"; };
 		6AAF4EB82963216600EB8088 /* Auido_44100.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = Auido_44100.pcm; sourceTree = "<group>"; };
 		6AAF4EB92963216600EB8088 /* Auido_8000.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = Auido_8000.pcm; sourceTree = "<group>"; };
-		6AB3F3162B32C18400EAC254 /* CMAudioSessionSpeed.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMAudioSessionSpeed.h; sourceTree = "<group>"; };
-		6AB3F3172B32C18400EAC254 /* CMAudioSessionSpeed.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMAudioSessionSpeed.m; sourceTree = "<group>"; };
+		6AB3F3162B32C18400EAC254 /* CMAudioSessionMixer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMAudioSessionMixer.h; sourceTree = "<group>"; };
+		6AB3F3172B32C18400EAC254 /* CMAudioSessionMixer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMAudioSessionMixer.m; sourceTree = "<group>"; };
 		6ACB3CB42B2A93330091094A /* InterpolateLinear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InterpolateLinear.cpp; sourceTree = "<group>"; };
 		6ACB3CB52B2A93330091094A /* TDStretch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TDStretch.h; sourceTree = "<group>"; };
 		6ACB3CB62B2A93330091094A /* InterpolateCubic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InterpolateCubic.cpp; sourceTree = "<group>"; };
@@ -124,6 +126,9 @@
 		6ACB3CCF2B2A93330091094A /* RateTransposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RateTransposer.h; sourceTree = "<group>"; };
 		6ACB3CD02B2A93330091094A /* InterpolateShannon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InterpolateShannon.cpp; sourceTree = "<group>"; };
 		6ACB3CD12B2A93330091094A /* InterpolateLinear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterpolateLinear.h; sourceTree = "<group>"; };
+		6AD135832B858E6000EB8C02 /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		6AD135842B858E6000EB8C02 /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		6AD135852B858E6000EB8C02 /* TestViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TestViewController.xib; sourceTree = "<group>"; };
 		6AE21A272B3D1B220054A817 /* AudioFileManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFileManager.h; sourceTree = "<group>"; };
 		6AE21A282B3D1B220054A817 /* AudioFileManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioFileManager.m; sourceTree = "<group>"; };
 		6AE21A2C2B3D4E330054A817 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
@@ -207,6 +212,9 @@
 				6AA06393280A73F900EF63A5 /* Info.plist */,
 				6AA06394280A73F900EF63A5 /* main.m */,
 				6AE21A2C2B3D4E330054A817 /* PrefixHeader.pch */,
+				6AD135832B858E6000EB8C02 /* TestViewController.h */,
+				6AD135842B858E6000EB8C02 /* TestViewController.m */,
+				6AD135852B858E6000EB8C02 /* TestViewController.xib */,
 			);
 			path = MediaDemo;
 			sourceTree = "<group>";
@@ -235,8 +243,8 @@
 				6AA063B7280A741E00EF63A5 /* CMAuidoPlayer_PCM.m */,
 				6AA063BB280A743D00EF63A5 /* CMAudioSession_PCM.h */,
 				6AA063BA280A743D00EF63A5 /* CMAudioSession_PCM.m */,
-				6AB3F3162B32C18400EAC254 /* CMAudioSessionSpeed.h */,
-				6AB3F3172B32C18400EAC254 /* CMAudioSessionSpeed.m */,
+				6AB3F3162B32C18400EAC254 /* CMAudioSessionMixer.h */,
+				6AB3F3172B32C18400EAC254 /* CMAudioSessionMixer.m */,
 			);
 			path = AuidoUnit;
 			sourceTree = "<group>";
@@ -432,6 +440,7 @@
 				6AAF2FE12B3D05D500EC295A /* AudioUnitGraphController.xib in Resources */,
 				6AA0638D280A73F600EF63A5 /* Main.storyboard in Resources */,
 				6AAF4EBB2963216600EB8088 /* Auido_8000.pcm in Resources */,
+				6AD135872B858E6000EB8C02 /* TestViewController.xib in Resources */,
 				6AAF4EBA2963216600EB8088 /* Auido_44100.pcm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -459,6 +468,7 @@
 			files = (
 				6ACB3CD82B2A93330091094A /* PeakFinder.cpp in Sources */,
 				6ACB3CD72B2A93330091094A /* cpu_detect_x86.cpp in Sources */,
+				6AD135862B858E6000EB8C02 /* TestViewController.m in Sources */,
 				6AA063BC280A743D00EF63A5 /* CMAudioSession_PCM.m in Sources */,
 				6ACB3CDA2B2A93330091094A /* FIRFilter.cpp in Sources */,
 				6ACB3CDC2B2A93330091094A /* RateTransposer.cpp in Sources */,
@@ -470,7 +480,7 @@
 				6AE21A352B3D69810054A817 /* UIView+QCHUD.m in Sources */,
 				6AE21A292B3D1B220054A817 /* AudioFileManager.m in Sources */,
 				6AAF2FDB2B3D05A700EC295A /* AudioUnitController.m in Sources */,
-				6AB3F3182B32C18400EAC254 /* CMAudioSessionSpeed.m in Sources */,
+				6AB3F3182B32C18400EAC254 /* CMAudioSessionMixer.m in Sources */,
 				6ACB3CD62B2A93330091094A /* TDStretch.cpp in Sources */,
 				6ACB3CDB2B2A93330091094A /* mmx_optimized.cpp in Sources */,
 				6AA0638A280A73F600EF63A5 /* ViewController.m in Sources */,

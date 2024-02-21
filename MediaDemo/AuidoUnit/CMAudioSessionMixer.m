@@ -5,9 +5,9 @@
 //  Created by Cold Mountain on 2023/12/20.
 //
 
-#import "CMAudioSessionSpeed.h"
+#import "CMAudioSessionMixer.h"
 
-@interface CMAudioSessionSpeed()
+@interface CMAudioSessionMixer()
 {
     AVAudioSession *audioSession;
     AudioBufferList *buffList;
@@ -22,7 +22,7 @@
 }
 @end
 
-@implementation CMAudioSessionSpeed
+@implementation CMAudioSessionMixer
 
 #pragma mark - 音频采集
 
@@ -32,7 +32,7 @@ static OSStatus CMRecordingCallback(void *inRefCon,
                                   UInt32 inBusNumber,
                                   UInt32 inNumberFrames,
                                   AudioBufferList *ioData) {
-    CMAudioSessionSpeed *session = (__bridge CMAudioSessionSpeed *)inRefCon;
+    CMAudioSessionMixer *session = (__bridge CMAudioSessionMixer *)inRefCon;
     OSStatus status = noErr;
     uint8_t  kAudioCaptureData[inNumberFrames*2];
     int32_t  kAudioCaptureSize = inNumberFrames * 2;
@@ -70,13 +70,13 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
                                   UInt32                      inBusNumber,
                                   UInt32                      inNumberFrames,
                                   AudioBufferList*            __nullable ioData){
-    CMAudioSessionSpeed * session = (__bridge CMAudioSessionSpeed *)(inRefCon);
+    CMAudioSessionMixer * session = (__bridge CMAudioSessionMixer *)(inRefCon);
     memcpy(ioData->mBuffers[0].mData, session->recorderBuffer, ioData->mBuffers[0].mDataByteSize);
     return noErr;
 }
 
 
-- (instancetype)initAudioUnitSpeedWithSampleRate:(CMAudioSpeedSampleRate)audioRate{
+- (instancetype)initAudioUnitMixerWithSampleRateinitAudioUnitMixerWithSampleRate:(CMAudioMixerSampleRate)audioRate{
     self = [super init];
     if (self) {
         self.audioRate = audioRate;
