@@ -379,6 +379,9 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 #pragma mark - 停止音频采样
 
 - (int)cm_stopAudioUnitRecorder{
+    if (!audioUnit) {
+        return -1;
+    }
     OSStatus status = AudioOutputUnitStop(audioUnit);
     if (status == noErr) {
         NSLog(@"停止音频");
@@ -392,6 +395,9 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 #pragma mark - 关闭音频采样
 
 - (void)cm_closeAudioUnitRecorder{
+    if (!audioUnit) {
+        return;
+    }
     AudioUnitUninitialize(audioUnit);
     if (buffList != NULL) {
         if (buffList->mBuffers[0].mData) {
@@ -404,6 +410,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     OSStatus status = AudioComponentInstanceDispose(audioUnit);
     if (status == noErr) {
         NSLog(@"CMAudioSession_PCM | 关闭音频采集");
+        audioUnit = NULL;
     }
 }
 

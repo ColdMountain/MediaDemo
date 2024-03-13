@@ -324,6 +324,9 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 #pragma mark - 停止采集
 
 - (int)stopAudioUnitRecorder{
+    if (!graph) {
+        return -1;
+    }
     OSStatus status = AUGraphStop(graph);
     if (status == noErr) {
         NSLog(@"停止音频");
@@ -337,6 +340,9 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 #pragma mark - 关闭采集
 
 - (void)closeAudioUnitRecorder{
+    if (!graph) {
+        return;
+    }
     OSStatus status = AUGraphClose(graph);
     if (buffList != NULL) {
         if (buffList->mBuffers[0].mData) {
@@ -348,6 +354,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     }
     if (status == noErr) {
         NSLog(@"CMAudioSessionSpeed | 关闭音频采集");
+        graph = NULL;
     }
 }
 
