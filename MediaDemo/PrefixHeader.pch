@@ -19,9 +19,10 @@
 #import "AudioFileManager.h"
 #import "QCHUDView.h"
 
-#define LocalEnable 0
-#define AudioPlayerEnable 0
-
+#define LocalEnable 0       //保存采集音频文件
+#define AudioPlayerEnable 0 //通过CMAuidoPlayer_PCM类进行播放
+#define AudioPlayerFile 0   //播放本地PCM文件宏
+#define FileName @"record"  //PCM文件名
 #endif
 
 // Include any system framework and library headers here that should be included in all compilation units.

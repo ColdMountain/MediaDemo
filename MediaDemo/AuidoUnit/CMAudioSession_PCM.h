@@ -33,7 +33,6 @@ typedef enum {
 - (void)setOutputAudioPort:(AVAudioSessionPortOverride)audioSessionPortOverride;
 - (void)cm_startEchoAudio:(int)echoStatus;
 - (void)cm_startAGC:(int)agcStatus;
-- (void)cm_mixerVolume:(int)volume;
 - (int)cm_startAudioUnitRecorder;
 - (int)cm_stopAudioUnitRecorder;
 - (void)cm_closeAudioUnitRecorder;

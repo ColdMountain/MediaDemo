@@ -76,7 +76,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 }
 
 
-- (instancetype)initAudioUnitMixerWithSampleRateinitAudioUnitMixerWithSampleRate:(CMAudioMixerSampleRate)audioRate{
+- (instancetype)initAudioUnitMixerWithSampleRate:(CMAudioMixerSampleRate)audioRate{
     self = [super init];
     if (self) {
         self.audioRate = audioRate;

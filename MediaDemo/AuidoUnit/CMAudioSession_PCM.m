@@ -239,8 +239,6 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     if (status != noErr) {
         NSLog(@"CMAudioSession_PCM | kAudioUnitScope_Input error, %d", (int)status);
     }
-    
-    
     UInt32 flag = 1;
     status = AudioUnitSetProperty(audioUnit,
                                   kAudioOutputUnitProperty_EnableIO,
@@ -252,7 +250,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
      if (status != noErr) {
          NSLog(@"CMAudioSession_PCM | kAudioOutputUnitProperty_EnableIO error, %d", (int)status);
      }
-    
+
     status = AudioUnitSetProperty(audioUnit,
                                   kAudioOutputUnitProperty_EnableIO,
                                   kAudioUnitScope_Input,
@@ -277,7 +275,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
         NSLog(@"CMAudioSession_PCM | kAudioOutputUnitProperty_SetInputCallback error, %d", (int)status);
     }
     
-#if 1
+#if !AudioPlayerEnable
     //设置数据播放回调
     AURenderCallbackStruct callBackStruct;
     callBackStruct.inputProc       = CMRenderCallback;
@@ -345,15 +343,6 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     }
 }
 
-#pragma mark - 设置输出音量大小
-
-- (void)cm_mixerVolume:(int)volume{
-//    OSStatus status;
-//    status = AudioUnitSetParameter(audioUnit, kHALOutputParam_Volume, kAudioUnitScope_Output, 0, volume, 0);
-//    if (status != noErr) {
-//        NSLog(@"CMAudioSession_PCM |kHALOutputParam_Volume Error=%d ", (int)status);
-//    }
-}
 
 #pragma mark - 开始音频采样
 

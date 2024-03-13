@@ -46,6 +46,7 @@
 		6AE21A342B3D69810054A817 /* QCHUDView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A2E2B3D69800054A817 /* QCHUDView.m */; };
 		6AE21A352B3D69810054A817 /* UIView+QCHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A2F2B3D69800054A817 /* UIView+QCHUD.m */; };
 		6AE21A362B3D69810054A817 /* QCHUDTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A332B3D69810054A817 /* QCHUDTool.m */; };
+		6AF245A62BA19F300013FF4F /* record.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6AF245A52BA19F300013FF4F /* record.pcm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,6 +139,7 @@
 		6AE21A312B3D69810054A817 /* QCHUDView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCHUDView.h; sourceTree = "<group>"; };
 		6AE21A322B3D69810054A817 /* UIView+QCHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+QCHUD.h"; sourceTree = "<group>"; };
 		6AE21A332B3D69810054A817 /* QCHUDTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCHUDTool.m; sourceTree = "<group>"; };
+		6AF245A52BA19F300013FF4F /* record.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = record.pcm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -252,6 +254,7 @@
 		6AAF2FD72B3D056500EC295A /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6AF245A52BA19F300013FF4F /* record.pcm */,
 				6AAF4EB92963216600EB8088 /* Auido_8000.pcm */,
 				6AAF4EB82963216600EB8088 /* Auido_44100.pcm */,
 			);
@@ -439,6 +442,7 @@
 				6AA0638F280A73F900EF63A5 /* Assets.xcassets in Resources */,
 				6AAF2FE12B3D05D500EC295A /* AudioUnitGraphController.xib in Resources */,
 				6AA0638D280A73F600EF63A5 /* Main.storyboard in Resources */,
+				6AF245A62BA19F300013FF4F /* record.pcm in Resources */,
 				6AAF4EBB2963216600EB8088 /* Auido_8000.pcm in Resources */,
 				6AD135872B858E6000EB8C02 /* TestViewController.xib in Resources */,
 				6AAF4EBA2963216600EB8088 /* Auido_44100.pcm in Resources */,

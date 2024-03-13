@@ -9,7 +9,7 @@
 #import "CMAuidoPlayer_PCM.h"
 #import <AudioToolbox/AudioToolbox.h>
 
-@interface CMAuidoPlayer_PCM()
+@interface CMAuidoPlayer_PCM()<NSStreamDelegate>
 {
     AudioUnit _outAudioUinit;
     AudioBufferList *renderBufferList;
@@ -48,8 +48,27 @@ static AudioStreamBasicDescription PCMStreamDescription(void*inData)
         self.audioRate = sampleRate;
         recorderBuffer = malloc(100*1024*1024);
         [self setupOutAudioUnit];
+#if AudioPlayerFile
+        [self openFile];
+#endif
     }
     return self;
+}
+
+#pragma mark - 加载本地播放文件
+
+- (void)openFile{
+    NSString *paths = [[NSBundle mainBundle] pathForResource:FileName ofType:@"pcm"];
+    NSData *localData = [[NSData alloc] initWithContentsOfFile:paths];
+    
+    inputStream = [NSInputStream inputStreamWithData:localData];
+    [inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    if (!inputStream) {
+        NSLog(@"打开文件失败 %@", paths);
+    }
+    else {
+        [inputStream open];
+    }
 }
 
 #pragma mark - 设置播放时的AudioUnit属性
@@ -108,25 +127,28 @@ OSStatus  CMAURenderCallback(void *                      inRefCon,
                              UInt32                      inNumberFrames,
                              AudioBufferList*            __nullable ioData){
     CMAuidoPlayer_PCM * self = (__bridge CMAuidoPlayer_PCM *)(inRefCon);
+#if AudioPlayerFile
+    ioData->mBuffers[0].mDataByteSize = (UInt32)[self->inputStream read:ioData->mBuffers[0].mData maxLength:(NSInteger)ioData->mBuffers[0].mDataByteSize];
+    if (ioData->mBuffers[0].mDataByteSize <= 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self cm_stop];
+        });
+    }
+#else
     memcpy(ioData->mBuffers[0].mData, self->recorderBuffer, ioData->mBuffers[0].mDataByteSize);
-
+#endif
     return noErr;
 }
 
 #pragma mark - 传入数据
 
 - (void)cm_playAudioWithData:(char*)pBuf andLength:(ssize_t)length{
-#if 0
-    NSData *pcmData = [NSData dataWithBytes:pBuf length:length];
-    [self.paketsArray addObject:pcmData];
-#else
     self->renderBufferList = (AudioBufferList *)malloc(sizeof(AudioBufferList));
     self->renderBufferList->mNumberBuffers = 1;
     self->renderBufferList->mBuffers[0].mNumberChannels = 1;
     self->renderBufferList->mBuffers[0].mDataByteSize = (UInt32)length;
     self->renderBufferList->mBuffers[0].mData = pBuf;
     memcpy(self->recorderBuffer, self->renderBufferList->mBuffers[0].mData, self->renderBufferList->mBuffers[0].mDataByteSize);
-#endif
     [self cm_play];
 }
 

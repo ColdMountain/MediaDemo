@@ -14,7 +14,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *button;
 @property (weak, nonatomic) IBOutlet UIButton *echoButton;
-
+@property (nonatomic, strong) CMAuidoPlayer_PCM *audioPlayer;
 @end
 
 @implementation ViewController
@@ -22,6 +22,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+#if AudioPlayerFile
+    self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_16000Hz];
+    [self.audioPlayer cm_play];
+#endif
 //    mSoundTouch.setSampleRate(8000); //采样率
 //    mSoundTouch.setChannels(1);       //设置声音的声道
 //    mSoundTouch.setTempoChange(0);//这个就是传说中的变速不变调
@@ -32,6 +36,7 @@
 //    mSoundTouch.setSetting(SETTING_SEEKWINDOW_MS, 15); //寻找帧长
 //    mSoundTouch.setSetting(SETTING_OVERLAP_MS, 6);  //重叠帧长
 }
+
 
 
 - (void)cm_audioUnitBackPCM:(NSData*)audioData selfClass:(CMAudioSession_PCM*)selfClass{
@@ -66,9 +71,7 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 - (IBAction)stopAction:(id)sender {
-//    AudioUnitGraphController *vc = [[AudioUnitGraphController alloc]init];
-//    [self.navigationController pushViewController:vc animated:YES];
-    TestViewController *vc = [[TestViewController alloc]init];
+    AudioUnitGraphController *vc = [[AudioUnitGraphController alloc]init];
     [self.navigationController pushViewController:vc animated:YES];
 }
 
