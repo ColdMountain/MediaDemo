@@ -7,9 +7,12 @@
 
 #import "ViewController.h"
 #import "TestViewController.h"
+
+#include "SoundTouch.h"
+
 @interface ViewController ()<NSStreamDelegate>
 {
-//    soundtouch::SoundTouch mSoundTouch; //变声器对象
+    soundtouch::SoundTouch mSoundTouch; //变声器对象
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *button;
@@ -59,7 +62,7 @@
 //        int numSamples = 0;
 //        numSamples = self->mSoundTouch.receiveSamples(samples, pcmsize);
 //        
-//        [self.soundData appendBytes:samples length:numSamples*2];
+////        [self.soundData appendBytes:samples length:numSamples*2];
 //
 ////        [self.auidoHandle writeData:self.soundData];
 //        [self.audioPlayer cm_playAudioWithData:(char*)samples andLength:pcmsize];
