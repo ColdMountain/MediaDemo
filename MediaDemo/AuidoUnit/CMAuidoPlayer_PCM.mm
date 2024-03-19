@@ -24,12 +24,51 @@
     
     Byte *recorderBuffer;
     soundtouch::SoundTouch mSoundTouch; //变声器对象
-    soundtouch::SAMPLETYPE sampleData[4096];
 }
 @property (nonatomic, strong) NSMutableArray<NSData*> *paketsArray;
 @end
 
 @implementation CMAuidoPlayer_PCM
+
+OSStatus  CMAURenderCallback(void *                      inRefCon,
+                             AudioUnitRenderActionFlags* ioActionFlags,
+                             const AudioTimeStamp*       inTimeStamp,
+                             UInt32                      inBusNumber,
+                             UInt32                      inNumberFrames,
+                             AudioBufferList*            __nullable ioData){
+    CMAuidoPlayer_PCM * self = (__bridge CMAuidoPlayer_PCM *)(inRefCon);
+#if AudioPlayerFile
+#if 1
+    //原声
+    ioData->mBuffers[0].mDataByteSize = (UInt32)[self->inputStream read:(uint8_t *)ioData->mBuffers[0].mData maxLength:(NSInteger)ioData->mBuffers[0].mDataByteSize];
+#else
+    //变声
+    NSInteger audioSize = 0;
+    uint8_t *audioData;
+    audioData = (uint8_t *)malloc(ioData->mBuffers[0].mDataByteSize * sizeof(uint8_t));
+    audioSize = [self->inputStream read:audioData maxLength:ioData->mBuffers[0].mDataByteSize];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        int nSamples = (int)ioData->mBuffers[0].mDataByteSize / 2;
+        int pcmsize = (int)ioData->mBuffers[0].mDataByteSize;
+        short *samples = new short[pcmsize];
+
+        self->mSoundTouch.putSamples((short *)audioData, nSamples);
+        int numSamples = 0;
+        numSamples = self->mSoundTouch.receiveSamples((short *)ioData->mBuffers[0].mData, ioData->mBuffers[0].mDataByteSize);
+    });
+#endif
+    if (ioData->mBuffers[0].mDataByteSize <= 0) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self cm_stop];
+        });
+    }
+#else
+    memcpy(ioData->mBuffers[0].mData, self->recorderBuffer, ioData->mBuffers[0].mDataByteSize);
+#endif
+    return noErr;
+}
+
 static AudioStreamBasicDescription PCMStreamDescription(void*inData)
 {
     CMAuidoPlayer_PCM *player = (__bridge CMAuidoPlayer_PCM*)(inData);
@@ -51,18 +90,7 @@ static AudioStreamBasicDescription PCMStreamDescription(void*inData)
     if (self = [super init]) {
         self.audioRate = sampleRate;
         recorderBuffer = (Byte *)malloc(100*1024*1024);
-//        recorderBuffer[100*1024*1024];
-        
-        mSoundTouch.setSampleRate(sampleRate); //采样率
-        mSoundTouch.setChannels(1);       //设置声音的声道
-        mSoundTouch.setTempoChange(0);//这个就是传说中的变速不变调
-        mSoundTouch.setPitchSemiTones(6);//设置声音的pitch (集音高变化semi-tones相比原来的音调)
-        mSoundTouch.setRateChange(0);//设置声音的速率
-        
-        mSoundTouch.setSetting(SETTING_SEQUENCE_MS, 40);
-        mSoundTouch.setSetting(SETTING_SEEKWINDOW_MS, 15); //寻找帧长
-        mSoundTouch.setSetting(SETTING_OVERLAP_MS, 6);  //重叠帧长
-        
+        [self setSoundTouch];
         [self setupOutAudioUnit];
 #if AudioPlayerFile
         [self openFile];
@@ -85,6 +113,20 @@ static AudioStreamBasicDescription PCMStreamDescription(void*inData)
     else {
         [inputStream open];
     }
+}
+
+#pragma mark - 变声器初始化
+
+- (void)setSoundTouch{
+    mSoundTouch.setSampleRate(self.audioRate); //采样率
+    mSoundTouch.setChannels(1);       //设置声音的声道
+    mSoundTouch.setTempoChange(0);//这个就是传说中的变速不变调
+    mSoundTouch.setPitchSemiTones(6);//设置声音的pitch (集音高变化semi-tones相比原来的音调)
+    mSoundTouch.setRateChange(0);//设置声音的速率
+    
+    mSoundTouch.setSetting(SETTING_SEQUENCE_MS, 40);
+    mSoundTouch.setSetting(SETTING_SEEKWINDOW_MS, 15); //寻找帧长
+    mSoundTouch.setSetting(SETTING_OVERLAP_MS, 6);  //重叠帧长
 }
 
 #pragma mark - 设置播放时的AudioUnit属性
@@ -134,44 +176,6 @@ static AudioStreamBasicDescription PCMStreamDescription(void*inData)
                          0,
                          &callBackStruct,
                          sizeof(callBackStruct));
-}
-
-OSStatus  CMAURenderCallback(void *                      inRefCon,
-                             AudioUnitRenderActionFlags* ioActionFlags,
-                             const AudioTimeStamp*       inTimeStamp,
-                             UInt32                      inBusNumber,
-                             UInt32                      inNumberFrames,
-                             AudioBufferList*            __nullable ioData){
-    CMAuidoPlayer_PCM * self = (__bridge CMAuidoPlayer_PCM *)(inRefCon);
-#if AudioPlayerFile
-    //原声
-    ioData->mBuffers[0].mDataByteSize = (UInt32)[self->inputStream read:(uint8_t *)ioData->mBuffers[0].mData maxLength:(NSInteger)ioData->mBuffers[0].mDataByteSize];
-    
-    //变声
-//    NSInteger audioSize = 0;
-//    uint8_t *audioData;
-//    audioData = (uint8_t *)malloc(ioData->mBuffers[0].mDataByteSize * sizeof(uint8_t));
-//    audioSize = [self->inputStream read:audioData maxLength:ioData->mBuffers[0].mDataByteSize];
-//    
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        int nSamples = (int)ioData->mBuffers[0].mDataByteSize / 2;
-//        int pcmsize = (int)ioData->mBuffers[0].mDataByteSize;
-//        short *samples = new short[pcmsize];
-//        
-//        self->mSoundTouch.putSamples((short *)audioData, nSamples);
-//        int numSamples = 0;
-//        numSamples = self->mSoundTouch.receiveSamples((short *)ioData->mBuffers[0].mData, ioData->mBuffers[0].mDataByteSize);
-//    });
-    
-    if (ioData->mBuffers[0].mDataByteSize <= 0) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self cm_stop];
-        });
-    }
-#else
-    memcpy(ioData->mBuffers[0].mData, self->recorderBuffer, ioData->mBuffers[0].mDataByteSize);
-#endif
-    return noErr;
 }
 
 #pragma mark - 传入数据
