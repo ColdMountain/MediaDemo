@@ -53,10 +53,10 @@ static AudioStreamBasicDescription PCMStreamDescription(void*inData)
         recorderBuffer = (Byte *)malloc(100*1024*1024);
 //        recorderBuffer[100*1024*1024];
         
-        mSoundTouch.setSampleRate(16000); //采样率
+        mSoundTouch.setSampleRate(sampleRate); //采样率
         mSoundTouch.setChannels(1);       //设置声音的声道
         mSoundTouch.setTempoChange(0);//这个就是传说中的变速不变调
-        mSoundTouch.setPitchSemiTones(0);//设置声音的pitch (集音高变化semi-tones相比原来的音调)
+        mSoundTouch.setPitchSemiTones(6);//设置声音的pitch (集音高变化semi-tones相比原来的音调)
         mSoundTouch.setRateChange(0);//设置声音的速率
         
         mSoundTouch.setSetting(SETTING_SEQUENCE_MS, 40);
