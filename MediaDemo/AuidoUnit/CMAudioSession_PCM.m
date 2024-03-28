@@ -20,7 +20,7 @@
     AVAudioSession *audioSession;
     int failed_initalize;
     Byte *recorderBuffer;
-//    soundtouch::SoundTouch mSoundTouch; //变声器对象
+
 }
 @end
 
@@ -102,7 +102,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
         recorderBuffer = malloc(100*1024*1024);
 //        recorderBuffer[100*1024*1024];
         self.audioRate = audioRate;
-        [self relocationAudio];
+        [self setAudioSession];
         [self initAudioComponent];
     }
     return self;
@@ -110,7 +110,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 
 #pragma mark - 设置AVAudioSession
 
-- (void)relocationAudio{
+- (void)setAudioSession{
     // /Applications/VLC.app/Contents/MacOS/VLC --demux=rawaud --rawaud-channels 1 --rawaud-samplerate 8000
     NSError* error;
     BOOL success;

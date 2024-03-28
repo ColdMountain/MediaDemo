@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A91ED6B2BB4211F00556CCA /* app_audio_playback.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6A91ED6A2BB4211E00556CCA /* app_audio_playback.pcm */; };
 		6AA06384280A73F600EF63A5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA06383280A73F600EF63A5 /* AppDelegate.m */; };
 		6AA06387280A73F600EF63A5 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA06386280A73F600EF63A5 /* SceneDelegate.m */; };
 		6AA0638A280A73F600EF63A5 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA06389280A73F600EF63A5 /* ViewController.m */; };
@@ -47,6 +48,7 @@
 		6AE21A352B3D69810054A817 /* UIView+QCHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A2F2B3D69800054A817 /* UIView+QCHUD.m */; };
 		6AE21A362B3D69810054A817 /* QCHUDTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AE21A332B3D69810054A817 /* QCHUDTool.m */; };
 		6AF245A62BA19F300013FF4F /* record.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6AF245A52BA19F300013FF4F /* record.pcm */; };
+		6AF44A922BAD7278006986D8 /* record.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 6AF44A912BAD7278006986D8 /* record.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +69,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6A91ED6A2BB4211E00556CCA /* app_audio_playback.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = app_audio_playback.pcm; sourceTree = "<group>"; };
 		6AA0637F280A73F600EF63A5 /* MediaDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MediaDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AA06382280A73F600EF63A5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		6AA06383280A73F600EF63A5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -140,6 +143,7 @@
 		6AE21A322B3D69810054A817 /* UIView+QCHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+QCHUD.h"; sourceTree = "<group>"; };
 		6AE21A332B3D69810054A817 /* QCHUDTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCHUDTool.m; sourceTree = "<group>"; };
 		6AF245A52BA19F300013FF4F /* record.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = record.pcm; sourceTree = "<group>"; };
+		6AF44A912BAD7278006986D8 /* record.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = record.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,9 +258,11 @@
 		6AAF2FD72B3D056500EC295A /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6AF44A912BAD7278006986D8 /* record.mp3 */,
 				6AF245A52BA19F300013FF4F /* record.pcm */,
 				6AAF4EB92963216600EB8088 /* Auido_8000.pcm */,
 				6AAF4EB82963216600EB8088 /* Auido_44100.pcm */,
+				6A91ED6A2BB4211E00556CCA /* app_audio_playback.pcm */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -444,8 +450,10 @@
 				6AA0638D280A73F600EF63A5 /* Main.storyboard in Resources */,
 				6AF245A62BA19F300013FF4F /* record.pcm in Resources */,
 				6AAF4EBB2963216600EB8088 /* Auido_8000.pcm in Resources */,
+				6A91ED6B2BB4211F00556CCA /* app_audio_playback.pcm in Resources */,
 				6AD135872B858E6000EB8C02 /* TestViewController.xib in Resources */,
 				6AAF4EBA2963216600EB8088 /* Auido_44100.pcm in Resources */,
+				6AF44A922BAD7278006986D8 /* record.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

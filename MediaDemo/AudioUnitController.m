@@ -60,7 +60,7 @@
 #endif
     int success = -1;
     if (self.audioSession == nil) {
-        self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_Defalut];
+        self.audioSession = [[CMAudioSession_PCM alloc]initAudioUnitWithSampleRate:CMAudioPCMSampleRate_44100Hz];
         self.audioSession.delegate = self;
     }
     success = [self.audioSession cm_startAudioUnitRecorder];

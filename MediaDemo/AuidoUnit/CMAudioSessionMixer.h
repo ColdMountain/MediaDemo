@@ -12,7 +12,7 @@
 typedef enum {
     CMAudioMixerSampleRate_Defalut = 8000,
     CMAudioMixerSampleRate_16000Hz = 16000,
-    CMAudioMixerdSampleRate_22050Hz = 22050,
+    CMAudioMixerSampleRate_22050Hz = 22050,
     CMAudioMixerSampleRate_24000Hz = 24000,
     CMAudioMixerSampleRate_32000Hz = 32000,
     CMAudioMixerSampleRate_44100Hz = 44100,

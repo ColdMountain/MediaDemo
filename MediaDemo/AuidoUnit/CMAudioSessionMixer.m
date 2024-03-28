@@ -14,10 +14,13 @@
     AUGraph graph;
     AudioUnit IOUnit;
     AudioUnit formatUnit;
+    AudioUnit formatUnit2;
     AudioUnit mixerUnit;
     AUNode outputNode;
     AUNode mixerNode;
     AUNode timePitchNode;
+    AUNode speedNode;
+    
     Byte *recorderBuffer;
 }
 @end
@@ -56,7 +59,6 @@ static OSStatus CMRecordingCallback(void *inRefCon,
                                    length:session->buffList->mBuffers[0].mDataByteSize];
         [session.delegate audioUnitBackPCM:pcmData];
     }
-//    NSLog(@"mDataByteSize %d", session->buffList->mBuffers[0].mDataByteSize);
     memcpy(session->recorderBuffer, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
     
     return noErr;
@@ -83,14 +85,14 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
         recorderBuffer = malloc(100*1024*1024);
         [self createAUGraph];
         [self setAudioUnit];
-        [self relocationAudio];
+        [self setAudioSession];
     }
     return self;
 }
 
 #pragma mark - 设置AVAudioSession
 
-- (void)relocationAudio{
+- (void)setAudioSession{
     // /Applications/VLC.app/Contents/MacOS/VLC --demux=rawaud --rawaud-channels 1 --rawaud-samplerate 8000
     NSError* error;
     BOOL success;
@@ -112,23 +114,25 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 
 - (void)createAUGraph{
     OSStatus status;
-#if 1
+    AudioComponentDescription speedACD = [self.class varispeedACD];
     AudioComponentDescription timePitchACD = [self.class timePitchACD];
     AudioComponentDescription mixerACD = [self.class mixerACD];
-#endif
     AudioComponentDescription outputACD = [self.class outputACD];
     
     status = NewAUGraph(&graph);
     
     AUGraphAddNode(graph, &outputACD, &outputNode);
+    AUGraphAddNode(graph, &speedACD, &speedNode);
     AUGraphAddNode(graph, &timePitchACD, &timePitchNode);
     AUGraphAddNode(graph, &mixerACD, &mixerNode);
     AUGraphConnectNodeInput(graph, mixerNode, 0, timePitchNode, 0);
-    AUGraphConnectNodeInput(graph, timePitchNode, 0, outputNode, 0);
+    AUGraphConnectNodeInput(graph, timePitchNode, 0, speedNode, 0);
+    AUGraphConnectNodeInput(graph, speedNode, 0, outputNode, 0);
     AUGraphOpen(graph);
     AUGraphNodeInfo(graph, outputNode, &outputACD, &IOUnit);
-    AUGraphNodeInfo(graph, mixerNode, &mixerACD, &mixerUnit);
+    AUGraphNodeInfo(graph, speedNode, &mixerACD, &formatUnit2);
     AUGraphNodeInfo(graph, timePitchNode, &timePitchACD, &formatUnit);
+    AUGraphNodeInfo(graph, mixerNode, &mixerACD, &mixerUnit);
 }
 
 #pragma mark - 设置AudioUnit
@@ -220,6 +224,7 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     AudioUnitPropertyID param = kAudioUnitProperty_MaximumFramesPerSlice;
     AudioUnitSetProperty(mixerUnit, param, scope, 0, &value, size);
     AudioUnitSetProperty(formatUnit, param, scope, 0, &value, size);
+    AudioUnitSetProperty(formatUnit2, param, scope, 0, &value, size);
     AudioUnitSetProperty(IOUnit, param, scope, 0, &value, size);
     
     //设置数据采集回调函数
@@ -289,20 +294,27 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
 
 - (void)pitchEnable:(int)pitchEnable{
     OSStatus status;
-    if (pitchEnable == 0) {
-        status = AudioUnitSetParameter(formatUnit, kNewTimePitchParam_Pitch, kAudioUnitScope_Global, 0, 0.0, 0);
+    if (pitchEnable == -1) {
+        status = AudioUnitSetParameter(formatUnit, kNewTimePitchParam_Pitch, kAudioUnitScope_Global, 0, 1, 0);
     }else{
-        status = AudioUnitSetParameter(formatUnit, kNewTimePitchParam_Pitch, kAudioUnitScope_Global, 0, (Float32)1000.0, 0);
+        status = AudioUnitSetParameter(formatUnit, kNewTimePitchParam_Pitch, kAudioUnitScope_Global, 0, (Float32)pitchEnable, 0);//-2400 -> 2400
+//        status = AudioUnitSetParameter(formatUnit2, kNewTimePitchParam_Rate, kAudioUnitScope_Global, 0, (Float32)25, 0);
+//        status = AudioUnitSetParameter(formatUnit2, kNewTimePitchParam_Smoothness, kAudioUnitScope_Global, 0, (Float32)3, 0);
     }
+    
 //    status = AudioUnitSetParameter(formatUnit, kNewTimePitchParam_Rate, kAudioUnitScope_Global, 0, (Float32)20.0, 0);
-//    status = AudioUnitSetParameter(formatUnit, kVarispeedParam_PlaybackRate, kAudioUnitScope_Global, 0, 2.5, 0);
-//    status = AudioUnitSetParameter(formatUnit, kVarispeedParam_PlaybackCents, kAudioUnitScope_Global, 0, (Float32)-200, 0);
+//    status = AudioUnitSetParameter(formatUnit, kVarispeedParam_PlaybackRate, kAudioUnitScope_Global, 0, 0.25, 0);
+//    AudioUnitParameterValue value = 0;
+//    AudioUnitGetParameter(formatUnit, kVarispeedParam_PlaybackRate, kAudioUnitScope_Global, 0, &value);
+//    status = AudioUnitSetParameter(formatUnit, kVarispeedParam_PlaybackCents, kAudioUnitScope_Global, 0, (Float32)1200, 0);
 }
 
 #pragma mark - 设置输出音量大小
 
 - (void)mixerVolume:(int)volume{
     AudioUnitSetParameter(mixerUnit, kMatrixMixerParam_Volume, kAudioUnitScope_Output, 0, volume, 0);
+//    AudioUnitSetParameter(formatUnit2, kVarispeedParam_PlaybackRate, kAudioUnitScope_Global, 0, 2.5, 0);
+//    AudioUnitSetParameter(formatUnit2, kVarispeedParam_PlaybackCents, kAudioUnitScope_Global, 0, (Float32)1000, 0);
 }
 
 #pragma mark - 开启采集
@@ -405,6 +417,17 @@ static void CheckStatus(OSStatus status, NSString *message, BOOL fatal)
     acd.componentFlags        = 0;
     acd.componentFlagsMask    = 0;
     return acd;
+}
+
++ (AudioComponentDescription)varispeedACD
+{
+    AudioComponentDescription speedACD;
+    speedACD.componentType = kAudioUnitType_FormatConverter;
+    speedACD.componentSubType = kAudioUnitSubType_Varispeed;
+    speedACD.componentManufacturer = kAudioUnitManufacturer_Apple;
+    speedACD.componentFlags        = 0;
+    speedACD.componentFlagsMask    = 0;
+    return speedACD;
 }
 
 + (AudioComponentDescription)mixerACD{

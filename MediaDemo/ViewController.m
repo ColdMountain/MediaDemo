@@ -8,11 +8,7 @@
 #import "ViewController.h"
 #import "TestViewController.h"
 
-@interface ViewController ()<NSStreamDelegate>
-{
-    
-}
-
+@interface ViewController ()
 @property (weak, nonatomic) IBOutlet UIButton *button;
 @property (weak, nonatomic) IBOutlet UIButton *echoButton;
 @property (nonatomic, strong) CMAuidoPlayer_PCM *audioPlayer;
@@ -24,9 +20,24 @@
     [super viewDidLoad];
     
 #if AudioPlayerFile
-    self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_16000Hz];
+    
+    NSError* error;
+    BOOL success;
+    //设置成语音视频模式
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    
+    success = [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord
+                            withOptions:AVAudioSessionCategoryOptionAllowBluetooth|
+                                        AVAudioSessionCategoryOptionAllowBluetoothA2DP|
+                                        AVAudioSessionCategoryOptionMixWithOthers|
+                                        AVAudioSessionCategoryOptionDuckOthers
+                                        |AVAudioSessionCategoryOptionDefaultToSpeaker
+                                  error:nil];
+    success = [audioSession setActive:YES error:&error];
+    self.audioPlayer = [[CMAuidoPlayer_PCM alloc]initWithAudioUnitPlayerSampleRate:CMAudioPlayerSampleRate_Defalut];
     [self.audioPlayer cm_play];
 #endif
+
 }
 
 #pragma mark - AudioUnit 音频采集播放

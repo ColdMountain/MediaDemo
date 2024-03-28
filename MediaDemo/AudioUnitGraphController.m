@@ -122,9 +122,9 @@
     }
     sender.selected = !sender.selected;
     if (sender.selected) {
-        [self.audioSession pitchEnable:1];
+        [self.audioSession pitchEnable:800];
     }else{
-        [self.audioSession pitchEnable:0];
+        [self.audioSession pitchEnable:-1];
     }
 }
 
