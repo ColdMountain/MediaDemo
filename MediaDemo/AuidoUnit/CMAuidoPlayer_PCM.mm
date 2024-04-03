@@ -10,6 +10,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 
 #include "SoundTouch.h"
+#include "noise_suppression.h"
 
 @interface CMAuidoPlayer_PCM()<NSStreamDelegate>
 {
@@ -30,6 +31,39 @@
 
 @implementation CMAuidoPlayer_PCM
 
+int nsProcess(int16_t *buffer, uint32_t sampleRate ,int samplesCount, int level)
+{
+    if (buffer == 0) return -1;
+    if (samplesCount == 0) return -1;
+    size_t samples = MIN(160, sampleRate / 100);
+    if (samples == 0) return -1;
+    uint32_t num_bands = 1;
+    int16_t *input = buffer;
+    size_t nTotal = (samplesCount / samples);
+    NsHandle *nsHandle = WebRtcNs_Create();
+    int status = WebRtcNs_Init(nsHandle, sampleRate);
+    if (status != 0) {
+        printf("WebRtcNs_Init fail\n");
+        return -1;
+    }
+    status = WebRtcNs_set_policy(nsHandle, level);
+    if (status != 0) {
+        printf("WebRtcNs_set_policy fail\n");
+        return -1;
+    }
+    for (int i = 0; i < nTotal; i++) {
+        int16_t *nsIn[1] = {input};   //ns input[band][data]
+        int16_t *nsOut[1] = {input};  //ns output[band][data]
+        WebRtcNs_Analyze(nsHandle, nsIn[0]);
+        WebRtcNs_Process(nsHandle, (const int16_t *const *) nsIn, num_bands, nsOut);
+        input += samples;
+    }
+    WebRtcNs_Free(nsHandle);
+
+    return 1;
+}
+
+
 OSStatus  CMAURenderCallback(void *                      inRefCon,
                              AudioUnitRenderActionFlags* ioActionFlags,
                              const AudioTimeStamp*       inTimeStamp,
@@ -39,8 +73,28 @@ OSStatus  CMAURenderCallback(void *                      inRefCon,
     CMAuidoPlayer_PCM * self = (__bridge CMAuidoPlayer_PCM *)(inRefCon);
 #if AudioPlayerFile
 #if 1
+    //添加webRTC降噪
+    /* 音频数据 
+     * 音频采样率
+     * 位深
+     * 降噪等级0~3
+     */
+    NSInteger audioSize = 0;
+    uint8_t *audioData;
+    audioData = (uint8_t *)malloc(ioData->mBuffers[0].mDataByteSize * sizeof(uint8_t));
+    audioSize = [self->inputStream read:audioData maxLength:ioData->mBuffers[0].mDataByteSize];
+    
+    
+    int success = nsProcess((short*)audioData,
+                            8000,
+                            16,
+                            3);
+    if (success == -1) {
+        NSLog(@"降噪失败 error:%d",success);
+    }
+    memcpy(ioData->mBuffers[0].mData, audioData, ioData->mBuffers[0].mDataByteSize);
     //原声
-    ioData->mBuffers[0].mDataByteSize = (UInt32)[self->inputStream read:(uint8_t *)ioData->mBuffers[0].mData maxLength:(NSInteger)ioData->mBuffers[0].mDataByteSize];
+//    ioData->mBuffers[0].mDataByteSize = (UInt32)[self->inputStream read:(uint8_t *)ioData->mBuffers[0].mData maxLength:(NSInteger)ioData->mBuffers[0].mDataByteSize];
 #else
     //变声
     NSInteger audioSize = 0;

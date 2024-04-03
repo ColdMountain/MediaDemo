@@ -6,6 +6,7 @@
 //
 
 #import "AudioUnitController.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface AudioUnitController ()<CMAudioSessionPCMDelegate>
 @property (nonatomic, strong) CMAudioSession_PCM *audioSession;
@@ -37,6 +38,10 @@
     
     [self.agcBtn setTitleColor:[UIColor systemGrayColor] forState:UIControlStateNormal];
     [self.agcBtn setTitleColor:[UIColor systemRedColor] forState:UIControlStateSelected];
+    
+#if LocalEnable
+    self.handle = [AudioFileManager createFileHandle];
+#endif
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -160,7 +165,7 @@
 
 - (void)cm_audioUnitBackPCM:(NSData*)audioData selfClass:(CMAudioSession_PCM*)selfClass{
 #if LocalEnable
-    self.handle = [[AudioFileManager createFileHandle] writeData:audioData];
+    [self.handle writeData:audioData];
 #endif
 #if AudioPlayerEnable
     [self.audioPlayer cm_playAudioWithData:(char*)[audioData bytes] andLength:audioData.length];

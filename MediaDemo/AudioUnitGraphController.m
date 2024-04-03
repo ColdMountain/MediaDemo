@@ -37,6 +37,9 @@
     self.echoButton.selected = YES;
     [self.echoButton setBackgroundColor:[UIColor systemPurpleColor]];
     [self.echoButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+#if LocalEnable
+    self.handle = [AudioFileManager createFileHandle];
+#endif
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
@@ -147,8 +150,8 @@
 #pragma mark - 音频采集回调
 
 - (void)audioUnitBackPCM:(NSData*)audioData{
-#if 0
-    self.handle = [[AudioFileManager createFileHandle] writeData:audioData];
+#if LocalEnable
+    [self.handle writeData:audioData];
 #endif
 }
 @end

@@ -21,6 +21,7 @@
     int failed_initalize;
     Byte *recorderBuffer;
 
+    SpeexPreprocessState *speexState;
 }
 @end
 
@@ -64,6 +65,9 @@ static OSStatus RecordingCallback(void *inRefCon,
          
          NSData *pcmData = [NSData dataWithBytes:session->buffList->mBuffers[0].mData
                                     length:session->buffList->mBuffers[0].mDataByteSize];
+         
+         speex_preprocess_run(session->speexState, (spx_int16_t*)(session->buffList->mBuffers[0].mData));
+         
          //把回调返回的音频数据 copy到 另一个Buffer中保存
          memcpy(session->recorderBuffer, session->buffList->mBuffers[0].mData, session->buffList->mBuffers[0].mDataByteSize);
 //         NSLog(@"mDataByteSize %d", session->buffList->mBuffers[0].mDataByteSize);
@@ -102,10 +106,32 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
         recorderBuffer = malloc(100*1024*1024);
 //        recorderBuffer[100*1024*1024];
         self.audioRate = audioRate;
+        
+        [self setSpeexDSP];
         [self setAudioSession];
         [self initAudioComponent];
     }
     return self;
+}
+
+- (void)setSpeexDSP{
+    speexState = speex_preprocess_state_init(1024, self.audioRate);
+    int denoise = 1;
+    int noiseSuppress = -20;
+    speex_preprocess_ctl(speexState, SPEEX_PREPROCESS_SET_DENOISE, &denoise);
+    speex_preprocess_ctl(speexState, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &noiseSuppress);
+    
+    int i;
+    i = 0;
+    speex_preprocess_ctl(speexState, SPEEX_PREPROCESS_SET_AGC, &i);
+    i = 80000;
+    speex_preprocess_ctl(speexState, SPEEX_PREPROCESS_SET_AGC_LEVEL, &i);
+    i = 0;
+    speex_preprocess_ctl(speexState, SPEEX_PREPROCESS_SET_DEREVERB, &i);
+    float f = 0;
+    speex_preprocess_ctl(speexState, SPEEX_PREPROCESS_SET_DEREVERB_DECAY, &f);
+    f = 0;
+    speex_preprocess_ctl(speexState, SPEEX_PREPROCESS_SET_DEREVERB_LEVEL, &f);
 }
 
 #pragma mark - 设置AVAudioSession
@@ -398,6 +424,9 @@ static OSStatus CMRenderCallback(void *                      inRefCon,
     if (!audioUnit) {
         return;
     }
+    
+    speex_preprocess_state_destroy(speexState);
+    
     AudioUnitUninitialize(audioUnit);
     if (buffList != NULL) {
         if (buffList->mBuffers[0].mData) {

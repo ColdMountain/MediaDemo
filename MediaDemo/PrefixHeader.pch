@@ -8,6 +8,9 @@
 #ifndef PrefixHeader_pch
 #define PrefixHeader_pch
 
+#include "speex_preprocess.h"
+#include "speex.h"
+
 #ifdef __OBJC__
 #import "AudioUnitController.h"
 #import "AudioUnitGraphController.h"
@@ -21,7 +24,7 @@
 
 #define LocalEnable 0       //保存采集音频文件
 #define AudioPlayerEnable 0 //通过CMAuidoPlayer_PCM类进行播放
-#define AudioPlayerFile 1   //播放本地PCM文件宏
+#define AudioPlayerFile 0   //播放本地PCM文件宏
 #define FileName @"app_audio_playback"  //PCM文件名
 #endif
 
