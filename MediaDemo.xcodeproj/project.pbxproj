@@ -30,6 +30,8 @@
 		6A87548F2BB553D000B3C467 /* SpeexViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 6A87548C2BB553D000B3C467 /* SpeexViewController.mm */; };
 		6A8FC9012BB5719100C74EAB /* 2081711618544_.pic.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 6A8FC9002BB5719100C74EAB /* 2081711618544_.pic.jpg */; };
 		6A8FC9032BB57E7B00C74EAB /* app_audio_playback 2.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6A8FC9022BB57E7B00C74EAB /* app_audio_playback 2.pcm */; };
+		6A8FC9572BBD5AD700C74EAB /* record2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6A8FC9562BBD5AD700C74EAB /* record2.wav */; };
+		6A8FC9592BBD5EE000C74EAB /* record2_pcm.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6A8FC9582BBD5EE000C74EAB /* record2_pcm.pcm */; };
 		6A91ED6B2BB4211F00556CCA /* app_audio_playback.pcm in Resources */ = {isa = PBXBuildFile; fileRef = 6A91ED6A2BB4211E00556CCA /* app_audio_playback.pcm */; };
 		6AA06384280A73F600EF63A5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA06383280A73F600EF63A5 /* AppDelegate.m */; };
 		6AA06387280A73F600EF63A5 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AA06386280A73F600EF63A5 /* SceneDelegate.m */; };
@@ -157,6 +159,8 @@
 		6A87548D2BB553D000B3C467 /* SpeexViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SpeexViewController.xib; sourceTree = "<group>"; };
 		6A8FC9002BB5719100C74EAB /* 2081711618544_.pic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2081711618544_.pic.jpg; sourceTree = "<group>"; };
 		6A8FC9022BB57E7B00C74EAB /* app_audio_playback 2.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = "app_audio_playback 2.pcm"; sourceTree = "<group>"; };
+		6A8FC9562BBD5AD700C74EAB /* record2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = record2.wav; sourceTree = "<group>"; };
+		6A8FC9582BBD5EE000C74EAB /* record2_pcm.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = record2_pcm.pcm; sourceTree = "<group>"; };
 		6A91ED6A2BB4211E00556CCA /* app_audio_playback.pcm */ = {isa = PBXFileReference; lastKnownFileType = file; path = app_audio_playback.pcm; sourceTree = "<group>"; };
 		6AA0637F280A73F600EF63A5 /* MediaDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MediaDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AA06382280A73F600EF63A5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -516,6 +520,8 @@
 			isa = PBXGroup;
 			children = (
 				6AF44A912BAD7278006986D8 /* record.mp3 */,
+				6A8FC9562BBD5AD700C74EAB /* record2.wav */,
+				6A8FC9582BBD5EE000C74EAB /* record2_pcm.pcm */,
 				6AF245A52BA19F300013FF4F /* record.pcm */,
 				6AAF4EB92963216600EB8088 /* Auido_8000.pcm */,
 				6AAF4EB82963216600EB8088 /* Auido_44100.pcm */,
@@ -713,7 +719,9 @@
 				6AF245A62BA19F300013FF4F /* record.pcm in Resources */,
 				6A87548E2BB553D000B3C467 /* SpeexViewController.xib in Resources */,
 				6AAF4EBB2963216600EB8088 /* Auido_8000.pcm in Resources */,
+				6A8FC9572BBD5AD700C74EAB /* record2.wav in Resources */,
 				6A91ED6B2BB4211F00556CCA /* app_audio_playback.pcm in Resources */,
+				6A8FC9592BBD5EE000C74EAB /* record2_pcm.pcm in Resources */,
 				6AD135872B858E6000EB8C02 /* TestViewController.xib in Resources */,
 				6A8754752BB552B600B3C467 /* libspeex.la in Resources */,
 				6AAF4EBA2963216600EB8088 /* Auido_44100.pcm in Resources */,

@@ -12,6 +12,7 @@
 #include "speex.h"
 
 #ifdef __OBJC__
+#import "SpeexViewController.h"
 #import "AudioUnitController.h"
 #import "AudioUnitGraphController.h"
 

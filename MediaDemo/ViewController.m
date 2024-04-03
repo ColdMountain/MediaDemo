@@ -43,7 +43,9 @@
 #pragma mark - AudioUnit 音频采集播放
 
 - (IBAction)startAction:(id)sender {
-    AudioUnitController *vc = [[AudioUnitController alloc]init];
+//    AudioUnitController *vc = [[AudioUnitController alloc]init];
+//    [self.navigationController pushViewController:vc animated:YES];
+    SpeexViewController *vc = [[SpeexViewController alloc]init];
     [self.navigationController pushViewController:vc animated:YES];
 }
 
